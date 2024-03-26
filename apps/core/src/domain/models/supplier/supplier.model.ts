@@ -1,16 +1,18 @@
+import { randomUUID } from "crypto";
+
 export interface ISupplier {
 	id: string;
 	cnpj: string;
 	corporateName: string;
-	phone: string;
+	phone?: string | null;
 	email: string;
-	zipcode: string;
-	street: string;
-	neighborhood: string;
-	addressNumber: string;
-	addressComplement: string;
-	city: string;
-	uf: string;
+	zipcode?: string | null;
+	street?: string | null;
+	neighborhood?: string | null;
+	addressNumber?: string | null;
+	addressComplement?: string | null;
+	city?: string | null;
+	uf?: string | null;
 }
 
 export class Supplier implements ISupplier {
@@ -18,19 +20,19 @@ export class Supplier implements ISupplier {
 	public readonly id: string;
 	public readonly cnpj: string;
 	public readonly corporateName: string;
-	public readonly phone: string;
+	public readonly phone?: string | null;
 	public readonly email: string;
-	public readonly zipcode: string;
-	public readonly street: string;
-	public readonly neighborhood: string;
-	public readonly addressNumber: string;
-	public readonly addressComplement: string;
-	public readonly city: string;
-	public readonly uf: string;
+	public readonly zipcode?: string | null;
+	public readonly street?: string | null;
+	public readonly neighborhood?: string | null;
+	public readonly addressNumber?: string | null;
+	public readonly addressComplement?: string | null;
+	public readonly city?: string | null;
+	public readonly uf?: string | null;
 
 	constructor({ id, cnpj, corporateName, phone, email, zipcode, street, neighborhood, addressNumber, addressComplement, city, uf }: ISupplier) {
 
-		this.id = id;
+		this.id = id || randomUUID();
 		this.cnpj = cnpj;
 		this.corporateName = corporateName;
 		this.phone = phone;

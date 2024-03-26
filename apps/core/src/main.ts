@@ -1,5 +1,11 @@
+import 'reflect-metadata';
+import './dependencies.container';
 import express from "express";
+import suppliersRouter from "./api/router/suppliers.router";
+import ErrorHandlerr from "./api/middlewares/errorHandler.middleware";
 
-const api = express();
-
-api.listen(3000, () => console.log("Stocksys API started!"));
+express()
+    .use(express.json())
+    .use(suppliersRouter)
+    .use(ErrorHandlerr)
+    .listen(3000, () => console.log("Stocksys API started!"));
