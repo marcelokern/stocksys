@@ -3,16 +3,16 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model suppliers {
-  id                String  @id
-  cnpj              String  @unique
+  id                String     @id
+  cnpj              String     @unique
   corporateName     String
   phone             String?
-  email             String  @unique
+  email             String     @unique
   zipcode           String?
   street            String?
   neighborhood      String?
@@ -20,4 +20,63 @@ model suppliers {
   addressComplement String?
   city              String?
   uf                String?
+  products          products[]
+  orders            orders[]
+}
+
+model products {
+  id             String       @id
+  code           String       @unique
+  description    String
+  measureUnit    String
+  address        String
+  securityStock  Float
+  supplierId     String
+  supplier       suppliers    @relation(fields: [supplierId], references: [id])
+  balance        Float
+  repositionTime Int
+  movements      movements[]
+  orderItems     orderItems[]
+}
+
+enum movementType {
+  IN
+  OUT
+  BAL
+}
+
+model movements {
+  id          String       @id
+  description String
+  productId   String
+  product     products     @relation(fields: [productId], references: [id])
+  date        DateTime
+  quantity    Float
+  type        movementType
+}
+
+enum orderStatus {
+  PENDING
+  CANCEL
+  COMPLETE
+}
+
+model orders {
+  id         String       @id
+  code       Int          @default(autoincrement())
+  supplierId String
+  supplier   suppliers    @relation(fields: [supplierId], references: [id])
+  date       DateTime
+  status     orderStatus
+  orderItems orderItems[]
+}
+
+model orderItems {
+  order     orders   @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   products @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Float
+
+  @@id([orderId, productId])
 }
