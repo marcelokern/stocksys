@@ -12,7 +12,7 @@ export class ProductDtoMapper {
 		dto.description = product.description;
 		dto.measureUnit = product.measureUnit;
 		dto.address = product.address;
-		dto.securityStock = product.securityStock;
+		dto.safetyStock = product.safetyStock;
 		dto.supplierId = product.supplierId;
 		dto.repositionTime = product.repositionTime;
 		
@@ -43,7 +43,7 @@ export class ProductDtoMapper {
 		product.description = dto.description;
 		product.measureUnit = dto.measureUnit;
 		product.address = dto.address;
-		product.securityStock = dto.securityStock;
+		product.safetyStock = dto.safetyStock;
 		product.repositionTime = dto.repositionTime;
 		product.balance = dto.balance;
 		product.supplierId = dto.supplierId;
@@ -61,7 +61,7 @@ export class ProductDtoMapper {
 		product.description = dto.description;
 		product.measureUnit = dto.measureUnit;
 		product.address = dto.address;
-		product.securityStock = dto.securityStock;
+		product.safetyStock = dto.safetyStock;
 		product.repositionTime = dto.repositionTime;
 		product.supplierId = dto.supplierId;
 		

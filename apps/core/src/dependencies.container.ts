@@ -12,6 +12,8 @@ import { IMovementsController, MovementsController } from './api/controllers/mov
 import { IOrdersRepository, OrdersRepository } from './infra/repositories/orders.repository';
 import { IOrdersService, OrdersService } from './domain/services/orders.service';
 import { IOrdersController, OrdersController } from './api/controllers/orders.controller';
+import { IReportsService, ReportsService } from './domain/services/reports.service';
+import { IReportsController, ReportsController } from './api/controllers/reports.controller';
 
 container.registerSingleton<IPrismaService>('PrismaService', PrismaService);
 
@@ -30,3 +32,6 @@ container.registerSingleton<IMovementsController>('MovementsController', Movemen
 container.registerSingleton<IOrdersRepository>('OrdersRepository', OrdersRepository);
 container.registerSingleton<IOrdersService>('OrdersService', OrdersService);
 container.registerSingleton<IOrdersController>('OrdersController', OrdersController);
+
+container.registerSingleton<IReportsService>('ReportsService', ReportsService);
+container.registerSingleton<IReportsController>('ReportsController', ReportsController);

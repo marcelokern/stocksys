@@ -31,6 +31,7 @@ export type IErrorList = {
 	ORDER_ITEMS_NOT_UNIQUE: ErrorData;
 	ORDER_STATUS_NOT_UPDATED: ErrorData;
 	ORDER_STATUS_BLOCKED: ErrorData;
+	REPORT_ERROR: ErrorData;
 };
 
 export const ErrorList: IErrorList = {
@@ -142,4 +143,8 @@ export const ErrorList: IErrorList = {
 		errorMessage: 'Ops, não é possível atualizar o status de um pedido cancelado ou finalizado.',
 		errorHTTPStatusCode: 400,
 	},
+	REPORT_ERROR: {
+		errorMessage: 'Ops, não é possível gerar o relatório com os parâmetros informados.',
+		errorHTTPStatusCode: 400,
+	}
 };

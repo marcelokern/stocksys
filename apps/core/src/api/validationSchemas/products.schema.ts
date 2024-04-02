@@ -13,7 +13,7 @@ export const createProductRequestSchema = z.object({
 			description: z.string({ required_error: 'O campo descrição é obrigatório!' }),
 			measureUnit: z.string({ required_error: 'O campo unidade de medida é obrigatório!' }),
 			address: z.string({ required_error: 'O campo endereço é obrigatório!' }),
-			securityStock: z.number({
+			safetyStock: z.number({
 				required_error: 'O campo estoque de segurança é obrigatório!',
 				invalid_type_error: 'Estoque de segurança deve ser ser um número',
 			}),
@@ -37,7 +37,7 @@ export const updateProductRequestSchema = z.object({
 			description: z.string({ required_error: 'O campo descrição é obrigatório!' }),
 			measureUnit: z.string({ required_error: 'O campo unidade de medida é obrigatório!' }),
 			address: z.string({ required_error: 'O campo endereço é obrigatório!' }),
-			securityStock: z.number({
+			safetyStock: z.number({
 				required_error: 'O campo estoque de segurança é obrigatório!',
 				invalid_type_error: 'Estoque de segurança deve ser ser um número',
 			}),

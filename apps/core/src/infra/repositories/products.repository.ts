@@ -7,8 +7,8 @@ import { DataMapper } from '../data/prisma/data.mapper';
 
 export interface IProductsRepository {
 	get(id: string): Promise<Product>;
-	list(): Promise<Product[]>;
-	create(Product: Product): Promise<void>;
+	list(parameters?: any): Promise<Product[]>;
+	create(product: Product): Promise<void>;
 	update(id: string, Product: Product): Promise<void>;
 	updateBalance(id: string, movementType: MovementType, quantity: number): Promise<void>;
 	delete(id: string): Promise<void>;
@@ -16,7 +16,7 @@ export interface IProductsRepository {
 
 @injectable()
 export class ProductsRepository implements IProductsRepository {
-	
+
 	private readonly prismaService: IPrismaService;
 
 	constructor(@inject('PrismaService') service: IPrismaService) {
@@ -24,14 +24,14 @@ export class ProductsRepository implements IProductsRepository {
 	}
 
 	async get(id: string): Promise<Product> {
-		
+
 		try {
-			
-			const data = await this.prismaService.products.findUniqueOrThrow({ 
-				where: { id }, 
-				include: { supplier: true } 
+
+			const data = await this.prismaService.products.findUniqueOrThrow({
+				where: { id },
+				include: { supplier: true }
 			});
-			
+
 			return DataMapper.productDataMapper(data);
 
 		} catch (error: any) {
@@ -42,23 +42,31 @@ export class ProductsRepository implements IProductsRepository {
 		}
 	}
 
-	async list(): Promise<Product[]> {
-		
-		const data = await this.prismaService.products.findMany({ 
-			include: { supplier: true }, 
-			orderBy: { description: 'asc' } 
-		});
-		
+	async list(parameters?: any): Promise<Product[]> {
+
+		const { productsIds, onlyCriticalItems } = parameters;
+
+		let filter: any = {};
+
+		if (productsIds && productsIds.length > 0) filter.id = { in: productsIds }
+		if (onlyCriticalItems) filter.balance = { lte: this.prismaService.products.fields.safetyStock }
+
+		const data = await this.prismaService.products.findMany({
+			include: { supplier: true },
+			where: filter,
+			orderBy: { description: 'asc' }
+		})
+
 		return data.map(x => DataMapper.productDataMapper(x));
-		
+
 	}
 
 	async create(product: Product): Promise<void> {
-		
+
 		try {
 
-			await this.prismaService.products.create({ 
-				data: { ...product, supplier: undefined } 
+			await this.prismaService.products.create({
+				data: { ...product, supplier: undefined }
 			});
 
 		} catch (error: any) {
@@ -71,14 +79,14 @@ export class ProductsRepository implements IProductsRepository {
 	}
 
 	async update(id: string, product: Product): Promise<void> {
-		
+
 		try {
 
-			await this.prismaService.products.update({ 
-				data: { ...product, supplier: undefined }, 
-				where: { id } 
+			await this.prismaService.products.update({
+				data: { ...product, supplier: undefined },
+				where: { id }
 			});
-		
+
 		} catch (error: any) {
 
 			if (error.code && error.code === 'P2025') throw new ErrorMapper('PRODUCT_NOT_FOUND');
@@ -91,38 +99,38 @@ export class ProductsRepository implements IProductsRepository {
 	}
 
 	async updateBalance(id: string, movementType: MovementType, quantity: number): Promise<void> {
-		
+
 		try {
-			
+
 			switch (movementType) {
 				case MovementType.IN:
-					await this.prismaService.products.update({ 
-						data: { 
-							balance: { 
-								increment: quantity 
-							} 
-						}, 
-						where: { id } 
+					await this.prismaService.products.update({
+						data: {
+							balance: {
+								increment: quantity
+							}
+						},
+						where: { id }
 					});
 					break;
 				case MovementType.OUT:
-					await this.prismaService.products.update({ 
-						data: { 
-							balance: { 
-								decrement: quantity 
-							} 
-						}, 
-						where: { id } 
+					await this.prismaService.products.update({
+						data: {
+							balance: {
+								decrement: quantity
+							}
+						},
+						where: { id }
 					});
 					break;
 				case MovementType.BAL:
-					await this.prismaService.products.update({ 
-						data: { 
-							balance: { 
-								set: quantity 
-							} 
-						}, 
-						where: { id } 
+					await this.prismaService.products.update({
+						data: {
+							balance: {
+								set: quantity
+							}
+						},
+						where: { id }
 					});
 					break;
 			}
@@ -137,11 +145,11 @@ export class ProductsRepository implements IProductsRepository {
 	}
 
 	async delete(id: string): Promise<void> {
-		
+
 		try {
 
 			await this.prismaService.products.delete({ where: { id } });
-		
+
 		} catch (error: any) {
 
 			if (error.code && error.code === 'P2025') throw new ErrorMapper('PRODUCT_NOT_FOUND');
@@ -151,5 +159,5 @@ export class ProductsRepository implements IProductsRepository {
 		}
 
 	}
-	
+
 }

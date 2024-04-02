@@ -30,7 +30,7 @@ model products {
   description    String
   measureUnit    String
   address        String
-  securityStock  Float
+  safetyStock    Float
   supplierId     String
   supplier       suppliers    @relation(fields: [supplierId], references: [id])
   balance        Float

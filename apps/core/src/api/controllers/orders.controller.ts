@@ -14,7 +14,7 @@ export interface IOrdersController {
 
 @injectable()
 export class OrdersController implements IOrdersController {
-	
+
 	private readonly ordersService: IOrdersService;
 
 	constructor(@inject('OrdersService') service: IOrdersService) {
@@ -22,9 +22,9 @@ export class OrdersController implements IOrdersController {
 	}
 
 	async getOrder(request: Request, response: Response, next: NextFunction): Promise<Response | void> {
-		
+
 		try {
-			
+
 			const { id } = request.params;
 			const order: Order = await this.ordersService.getOrder(id);
 			const dto: GetOrderDto = OrderDtoMapper.getOrderDtoMapper(order);
@@ -32,7 +32,6 @@ export class OrdersController implements IOrdersController {
 
 		} catch (error: any) {
 
-			console.log(error)
 			return next(error);
 
 		}
@@ -40,7 +39,7 @@ export class OrdersController implements IOrdersController {
 	}
 
 	async listOrders(request: Request, response: Response, next: NextFunction): Promise<Response | void> {
-		
+
 		try {
 
 			const orders: Order[] = await this.ordersService.listOrders();
@@ -56,11 +55,11 @@ export class OrdersController implements IOrdersController {
 	}
 
 	async createOrder(request: Request, response: Response, next: NextFunction): Promise<Response | void> {
-		
+
 		try {
-			
+
 			const createOrderDto: CreateOrderDto = request.body;
-			const order: Order = OrderDtoMapper.createOrderDtoMapper(createOrderDto); 
+			const order: Order = OrderDtoMapper.createOrderDtoMapper(createOrderDto);
 			await this.ordersService.createOrder(order);
 			return response.send({ message: 'Pedido criado com sucesso!' });
 
@@ -73,8 +72,9 @@ export class OrdersController implements IOrdersController {
 	}
 
 	async updateOrderStatus(request: Request, response: Response, next: NextFunction): Promise<Response | void> {
-		
+
 		try {
+
 			const { id } = request.params;
 			const { status } = request.body;
 			await this.ordersService.updateOrderStatus(id, status);

@@ -5,12 +5,12 @@ import { Movement, MovementType } from "../../../domain/models/movement.model";
 import { Order, OrderStatus } from "../../../domain/models/order.model";
 import { OrderItem } from "../../../domain/models/orderItem.model";
 
-export class DataMapper{
+export class DataMapper {
 
-    public static supplierDataMapper(data: suppliers): Supplier{
+    public static supplierDataMapper(data: suppliers): Supplier {
 
         const supplier = new Supplier();
-        
+
         supplier.id = data.id;
         supplier.cnpj = data.cnpj;
         supplier.corporateName = data.corporateName;
@@ -28,7 +28,7 @@ export class DataMapper{
 
     };
 
-    public static productDataMapper(data: Prisma.productsGetPayload<{ include: { supplier: true } }>): Product{
+    public static productDataMapper(data: Prisma.productsGetPayload<{ include: { supplier: true } }>): Product {
 
         const product = new Product();
 
@@ -37,7 +37,7 @@ export class DataMapper{
         product.description = data.description;
         product.measureUnit = data.measureUnit;
         product.address = data.address;
-        product.securityStock = data.securityStock;
+        product.safetyStock = data.safetyStock;
         product.repositionTime = data.repositionTime;
         product.balance = data.balance;
         product.supplierId = data.supplierId;
@@ -47,17 +47,18 @@ export class DataMapper{
 
     };
 
-    public static movementsDataMapper(data: Prisma.movementsGetPayload<{ include:{ product: { include: { supplier: true } } } }>): Movement{
+    public static movementsDataMapper(data: Prisma.movementsGetPayload<{ include: { product: { include: { supplier: true } } } }>): Movement {
 
         const movement = new Movement();
 
         movement.id = data.id;
         movement.description = data.description;
+        movement.productId = data.productId;
         movement.product = this.productDataMapper(data.product);
         movement.date = data.date;
         movement.quantity = data.quantity;
-        
-        switch(data.type){
+
+        switch (data.type) {
             case "IN": movement.type = MovementType.IN; break;
             case "OUT": movement.type = MovementType.OUT; break;
             case "BAL": movement.type = MovementType.BAL; break;
@@ -67,7 +68,7 @@ export class DataMapper{
 
     };
 
-    public static ordersListDataMapper(data: Prisma.ordersGetPayload<{ include: { supplier: true } }>): Order{
+    public static ordersListDataMapper(data: Prisma.ordersGetPayload<{ include: { supplier: true } }>): Order {
 
         const order = new Order();
 
@@ -76,8 +77,8 @@ export class DataMapper{
         order.date = data.date;
         order.supplierId = data.supplierId;
         order.supplier = this.supplierDataMapper(data.supplier);
-        
-        switch(data.status){
+
+        switch (data.status) {
             case "PENDING": order.status = OrderStatus.PENDING; break;
             case "COMPLETE": order.status = OrderStatus.COMPLETE; break;
             case "CANCEL": order.status = OrderStatus.CANCEL; break;
@@ -87,22 +88,22 @@ export class DataMapper{
 
     };
 
-    public static ordersGetDataMapper(data: Prisma.ordersGetPayload<{ 
-        include: { 
-            supplier: true, 
-            orderItems: { 
-                include : { 
-                    product : { 
-                        select: { 
-                            code: true, 
+    public static ordersGetDataMapper(data: Prisma.ordersGetPayload<{
+        include: {
+            supplier: true,
+            orderItems: {
+                include: {
+                    product: {
+                        select: {
+                            code: true,
                             description: true,
                             measureUnit: true
-                        } 
-                    } 
-                } 
+                        }
+                    }
+                }
             }
         }
-    }>): Order{
+    }>): Order {
 
         const order = new Order();
 
@@ -111,8 +112,8 @@ export class DataMapper{
         order.date = data.date;
         order.supplierId = data.supplierId;
         order.supplier = this.supplierDataMapper(data.supplier);
-        
-        switch(data.status){
+
+        switch (data.status) {
             case "PENDING": order.status = OrderStatus.PENDING; break;
             case "COMPLETE": order.status = OrderStatus.COMPLETE; break;
             case "CANCEL": order.status = OrderStatus.CANCEL; break;
@@ -121,7 +122,7 @@ export class DataMapper{
         order.orderItems = data.orderItems.map(item => {
 
             const orderItem = new OrderItem();
-            
+
             orderItem.product = new Product();
 
             orderItem.quantity = item.quantity;

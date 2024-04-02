@@ -4,7 +4,7 @@ export class GetProductDto {
 	public description: string;
 	public measureUnit: string;
 	public address: string;
-	public securityStock: number;
+	public safetyStock: number;
 	public supplierId: string;
 	public repositionTime: number;
 }
@@ -23,7 +23,7 @@ export class CreateProductDto {
 	public description: string;
 	public measureUnit: string;
 	public address: string;
-	public securityStock: number;
+	public safetyStock: number;
 	public repositionTime: number;
 	public balance: number;
 	public supplierId: string;
@@ -34,7 +34,7 @@ export class UpdateProductDto {
 	public description: string;
 	public measureUnit: string;
 	public address: string;
-	public securityStock: number;
+	public safetyStock: number;
 	public supplierId: string;
 	public repositionTime: number;
 }

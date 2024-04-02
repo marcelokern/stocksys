@@ -6,6 +6,7 @@ import suppliersRouter from './api/router/suppliers.router';
 import productsRouter from './api/router/products.router';
 import movementsRouter from './api/router/movements.router';
 import ordersRouter from './api/router/orders.router';
+import reportsRouter from './api/router/reports.router';
 
 express()
 	.use(express.json())
@@ -13,5 +14,6 @@ express()
 	.use(productsRouter)
 	.use(movementsRouter)
 	.use(ordersRouter)
+	.use(reportsRouter)
 	.use(errorHandlerr)
-	.listen(3000, () => console.log('===> STOCKSYS API STARTED'));
+	.listen(3000, () => { console.log('===> STOCKSYS API STARTED') });

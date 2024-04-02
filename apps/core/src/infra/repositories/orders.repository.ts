@@ -13,7 +13,7 @@ export interface IOrdersRepository {
 
 @injectable()
 export class OrdersRepository implements IOrdersRepository {
-	
+
 	private readonly prismaService: IPrismaService;
 
 	constructor(@inject('PrismaService') service: IPrismaService) {
@@ -21,9 +21,9 @@ export class OrdersRepository implements IOrdersRepository {
 	}
 
 	async get(id: string): Promise<Order> {
-		
+
 		try {
-			
+
 			const data = await this.prismaService.orders.findUniqueOrThrow({
 				where: { id: 'a6a491b5-b527-4bcb-8f6a-7d45cf5a939a' },
 				include: {
@@ -41,12 +41,10 @@ export class OrdersRepository implements IOrdersRepository {
 					}
 				},
 			});
-			
+
 			return DataMapper.ordersGetDataMapper(data);
 
 		} catch (error: any) {
-
-			console.log(error)
 
 			if (error.code && error.code === 'P2025') throw new ErrorMapper('ORDER_NOT_FOUND');
 			throw new ErrorMapper('ORDER_GET_ERROR');
@@ -56,26 +54,26 @@ export class OrdersRepository implements IOrdersRepository {
 	}
 
 	async list(): Promise<Order[]> {
-		
+
 		const data = await this.prismaService.orders.findMany({
 			include: {
 				supplier: true
 			},
 			orderBy: {
-				date: 'desc' 
+				date: 'desc'
 			}
 		});
-		
+
 		return data.map(x => DataMapper.ordersListDataMapper(x));
-		
+
 	}
 
 	async create(order: Order): Promise<void> {
 
 		try {
-			
+
 			await this.prismaService.orders.create({
-				data: { 
+				data: {
 					...order,
 					orderItems: {
 						create: order.orderItems.map((orderItem) => ({ ...orderItem }))
@@ -94,16 +92,16 @@ export class OrdersRepository implements IOrdersRepository {
 	}
 
 	async updateStatus(id: string, status: OrderStatus): Promise<void> {
-		
+
 		try {
-			
+
 			await this.prismaService.orders.update({
 				data: {
 					status: {
-						set: status 
-					} 
+						set: status
+					}
 				},
-				where: { id } 
+				where: { id }
 			});
 
 		} catch (error: any) {

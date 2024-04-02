@@ -7,7 +7,7 @@ export class Product {
 	public description: string;
 	public measureUnit: string;
 	public address: string;
-	public securityStock: number;
+	public safetyStock: number;
 	public repositionTime: number;
 	public balance: number;
 	public supplierId: string;
