@@ -53,6 +53,8 @@ model movements {
   date        DateTime
   quantity    Float
   type        movementType
+  user        users        @relation(fields: [userId], references: [id])
+  userId      String
 }
 
 enum orderStatus {
@@ -79,4 +81,21 @@ model orderItems {
   quantity  Float
 
   @@id([orderId, productId])
+}
+
+enum userRoles {
+  OPERATOR
+  MANAGER
+  ADMIN
+}
+
+model users {
+  id              String      @id
+  registration    String      @unique
+  name            String
+  email           String      @unique
+  role            userRoles
+  passwordCreated Boolean
+  hashPassword    String
+  movements       movements[]
 }

@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Product } from './product.model';
+import { User } from './user.model';
 
 export enum MovementType {
 	IN = 'IN',
@@ -15,6 +16,8 @@ export class Movement {
 	public date: Date;
 	public quantity: number;
 	public type: MovementType;
+	public userId: string;
+	public user: User;
 
 	constructor() {
 		this.id = randomUUID();

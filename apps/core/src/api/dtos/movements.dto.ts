@@ -8,6 +8,8 @@ export class ListMovementDto {
 	public productDescription: string;
 	public quantity: number;
 	public type: MovementType;
+	public userId: string;
+	public userName: string;
 }
 
 export class CreateMovementDto {

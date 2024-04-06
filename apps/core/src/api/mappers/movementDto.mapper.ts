@@ -4,7 +4,7 @@ import { CreateMovementDto, ListMovementDto } from '../dtos/movements.dto';
 export class MovementDtoMapper {
 
 	public static listMovementDtoMapper(movement: Movement): ListMovementDto {
-		
+
 		const dto = new ListMovementDto();
 
 		dto.id = movement.id;
@@ -14,23 +14,26 @@ export class MovementDtoMapper {
 		dto.productDescription = movement.product.description;
 		dto.quantity = movement.quantity;
 		dto.type = movement.type;
+		dto.userId = movement.userId;
+		dto.userName = movement.user.name;
 
 		return dto;
 
 	}
 
-	public static createMovementDtoMapper(dto: CreateMovementDto): Movement {
-		
+	public static createMovementDtoMapper(dto: CreateMovementDto, userId: string): Movement {
+
 		const movement = new Movement();
-		
+
 		movement.productId = dto.productId;
 		movement.description = dto.description;
 		movement.date = dto.date;
 		movement.quantity = dto.quantity;
 		movement.type = dto.type;
-		
+		movement.userId = userId;
+
 		return movement;
-		
+
 	}
 
 }

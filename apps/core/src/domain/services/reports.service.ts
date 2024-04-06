@@ -37,8 +37,6 @@ export class ReportsService implements IReportsService {
 			report.totalDays = Math.floor((report.endDate.getTime() - report.startDate.getTime()) / (1000 * 60 * 60 * 24));
 			report.generatedDate = new Date();
 
-			console.log(productsIds)
-
 			const movements: Movement[] = await this.movementsRepository.list({ productsIds });
 
 			report.reportData = movements.map(item => {

@@ -12,7 +12,7 @@ export interface IMovementsController {
 
 @injectable()
 export class MovementsController implements IMovementsController {
-	
+
 	private readonly movementsService: IMovementsService;
 
 	constructor(@inject('MovementsService') service: IMovementsService) {
@@ -20,9 +20,9 @@ export class MovementsController implements IMovementsController {
 	}
 
 	async listMovements(request: Request, response: Response, next: NextFunction): Promise<Response | void> {
-		
+
 		try {
-			
+
 			const movements: Movement[] = await this.movementsService.listMovements();
 			const listMovementDto: ListMovementDto[] = movements.map((movement) => MovementDtoMapper.listMovementDtoMapper(movement));
 			return response.send(listMovementDto);
@@ -36,14 +36,15 @@ export class MovementsController implements IMovementsController {
 	}
 
 	async createMovement(request: Request, response: Response, next: NextFunction): Promise<Response | void> {
-		
+
 		try {
 
+			const userId = request.user.id;
 			const dto: CreateMovementDto = request.body;
-			const movement = MovementDtoMapper.createMovementDtoMapper(dto);
+			const movement = MovementDtoMapper.createMovementDtoMapper(dto, userId);
 			await this.movementsService.createMovement(movement);
 			return response.send({ message: 'Movimentação registrada com sucesso!' });
-		
+
 		} catch (error: any) {
 
 			return next(error);

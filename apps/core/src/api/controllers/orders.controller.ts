@@ -75,9 +75,10 @@ export class OrdersController implements IOrdersController {
 
 		try {
 
+			const userId = request.user.id;
 			const { id } = request.params;
 			const { status } = request.body;
-			await this.ordersService.updateOrderStatus(id, status);
+			await this.ordersService.updateOrderStatus(id, status, userId);
 			return response.send({
 				message: status === 'COMPLETE' ? 'Pedido finalizado com sucesso!' : 'Pedido cancelado com sucesso!',
 			});

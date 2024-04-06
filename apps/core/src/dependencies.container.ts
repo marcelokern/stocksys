@@ -14,6 +14,9 @@ import { IOrdersService, OrdersService } from './domain/services/orders.service'
 import { IOrdersController, OrdersController } from './api/controllers/orders.controller';
 import { IReportsService, ReportsService } from './domain/services/reports.service';
 import { IReportsController, ReportsController } from './api/controllers/reports.controller';
+import { IUsersRepository, UsersRepository } from './infra/repositories/users.repository';
+import { IUsersService, UsersService } from './domain/services/users.service';
+import { IUsersController, UsersController } from './api/controllers/users.controller';
 
 container.registerSingleton<IPrismaService>('PrismaService', PrismaService);
 
@@ -35,3 +38,7 @@ container.registerSingleton<IOrdersController>('OrdersController', OrdersControl
 
 container.registerSingleton<IReportsService>('ReportsService', ReportsService);
 container.registerSingleton<IReportsController>('ReportsController', ReportsController);
+
+container.registerSingleton<IUsersRepository>('UsersRepository', UsersRepository);
+container.registerSingleton<IUsersService>('UsersService', UsersService);
+container.registerSingleton<IUsersController>('UsersController', UsersController);

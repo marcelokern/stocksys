@@ -8,14 +8,14 @@ import { ErrorMapper } from '../../infra/cross/errorMapper';
 export interface IProductsService {
 	getProduct(id: string): Promise<Product>;
 	listProducts(): Promise<Product[]>;
-	createProduct(product: Product): Promise<void>;
+	createProduct(product: Product, userId: string): Promise<void>;
 	updateProduct(id: string, product: Product): Promise<void>;
 	deleteProduct(id: string): Promise<void>;
 }
 
 @injectable()
 export class ProductsService implements IProductsService {
-	
+
 	private readonly productsRepository: IProductsRepository;
 	private readonly movementsRepository: IMovementsRepository;
 
@@ -28,38 +28,38 @@ export class ProductsService implements IProductsService {
 	}
 
 	async getProduct(id: string): Promise<Product> {
-		
+
 		try {
-			
+
 			return await this.productsRepository.get(id);
 
 		} catch (error: any) {
-			
+
 			if (error instanceof ErrorMapper) throw error;
 			throw new ErrorMapper('PRODUCT_GET_ERROR');
-		
+
 		}
 
 	}
 
 	async listProducts(): Promise<Product[]> {
-		
+
 		try {
-			
+
 			return await this.productsRepository.list();
-		
+
 		} catch (error: any) {
-			
+
 			throw new ErrorMapper('PRODUCT_LIST_ERROR');
-		
+
 		}
 
 	}
 
-	async createProduct(product: Product): Promise<void> {
-		
+	async createProduct(product: Product, userId: string): Promise<void> {
+
 		try {
-			
+
 			await this.productsRepository.create(product);
 
 			const movement: Movement = new Movement();
@@ -67,26 +67,27 @@ export class ProductsService implements IProductsService {
 			movement.productId = product.id;
 			movement.quantity = product.balance;
 			movement.type = MovementType.BAL;
+			movement.userId = userId;
 
 			await this.movementsRepository.create(movement);
 
 		} catch (error: any) {
-			
+
 			if (error instanceof ErrorMapper) throw error;
 			throw new ErrorMapper('PRODUCT_NOT_CREATED');
 
 		}
-		
+
 	}
 
 	async updateProduct(id: string, product: Product): Promise<void> {
-		
+
 		try {
-			
+
 			await this.productsRepository.update(id, product);
-		
+
 		} catch (error: any) {
-			
+
 			if (error instanceof ErrorMapper) throw error;
 			throw new ErrorMapper('PRODUCT_NOT_UPDATED');
 
@@ -94,11 +95,11 @@ export class ProductsService implements IProductsService {
 	}
 
 	async deleteProduct(id: string): Promise<void> {
-		
+
 		try {
-			
+
 			await this.productsRepository.delete(id);
-		
+
 		} catch (error: any) {
 
 			if (error instanceof ErrorMapper) throw error;

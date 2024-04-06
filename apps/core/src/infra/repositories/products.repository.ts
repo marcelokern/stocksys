@@ -44,12 +44,10 @@ export class ProductsRepository implements IProductsRepository {
 
 	async list(parameters?: any): Promise<Product[]> {
 
-		const { productsIds, onlyCriticalItems } = parameters;
-
 		let filter: any = {};
 
-		if (productsIds && productsIds.length > 0) filter.id = { in: productsIds }
-		if (onlyCriticalItems) filter.balance = { lte: this.prismaService.products.fields.safetyStock }
+		if (parameters?.productsIds && parameters?.productsIds.length > 0) filter.id = { in: parameters?.productsIds }
+		if (parameters?.onlyCriticalItems) filter.balance = { lte: this.prismaService.products.fields.safetyStock }
 
 		const data = await this.prismaService.products.findMany({
 			include: { supplier: true },

@@ -25,7 +25,7 @@ export class OrdersRepository implements IOrdersRepository {
 		try {
 
 			const data = await this.prismaService.orders.findUniqueOrThrow({
-				where: { id: 'a6a491b5-b527-4bcb-8f6a-7d45cf5a939a' },
+				where: { id },
 				include: {
 					supplier: true,
 					orderItems: {
@@ -42,7 +42,7 @@ export class OrdersRepository implements IOrdersRepository {
 				},
 			});
 
-			return DataMapper.ordersGetDataMapper(data);
+			return DataMapper.orderGetDataMapper(data);
 
 		} catch (error: any) {
 
@@ -64,7 +64,7 @@ export class OrdersRepository implements IOrdersRepository {
 			}
 		});
 
-		return data.map(x => DataMapper.ordersListDataMapper(x));
+		return data.map(x => DataMapper.orderListDataMapper(x));
 
 	}
 

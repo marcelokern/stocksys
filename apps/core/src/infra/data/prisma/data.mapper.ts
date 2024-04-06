@@ -1,9 +1,10 @@
-import { Prisma, products, suppliers, movementType } from "@prisma/client";
+import { Prisma, products, suppliers, movementType, users } from "@prisma/client";
 import { Supplier } from "../../../domain/models/supplier.model";
 import { Product } from "../../../domain/models/product.model";
 import { Movement, MovementType } from "../../../domain/models/movement.model";
 import { Order, OrderStatus } from "../../../domain/models/order.model";
 import { OrderItem } from "../../../domain/models/orderItem.model";
+import { User, UserRole } from "../../../domain/models/user.model";
 
 export class DataMapper {
 
@@ -47,7 +48,7 @@ export class DataMapper {
 
     };
 
-    public static movementsDataMapper(data: Prisma.movementsGetPayload<{ include: { product: { include: { supplier: true } } } }>): Movement {
+    public static movementDataMapper(data: Prisma.movementsGetPayload<{ include: { user: true, product: { include: { supplier: true } } } }>): Movement {
 
         const movement = new Movement();
 
@@ -57,6 +58,8 @@ export class DataMapper {
         movement.product = this.productDataMapper(data.product);
         movement.date = data.date;
         movement.quantity = data.quantity;
+        movement.userId = data.userId;
+        movement.user = this.userDataMapper(data.user);
 
         switch (data.type) {
             case "IN": movement.type = MovementType.IN; break;
@@ -68,7 +71,7 @@ export class DataMapper {
 
     };
 
-    public static ordersListDataMapper(data: Prisma.ordersGetPayload<{ include: { supplier: true } }>): Order {
+    public static orderListDataMapper(data: Prisma.ordersGetPayload<{ include: { supplier: true } }>): Order {
 
         const order = new Order();
 
@@ -88,7 +91,7 @@ export class DataMapper {
 
     };
 
-    public static ordersGetDataMapper(data: Prisma.ordersGetPayload<{
+    public static orderGetDataMapper(data: Prisma.ordersGetPayload<{
         include: {
             supplier: true,
             orderItems: {
@@ -137,6 +140,27 @@ export class DataMapper {
         })
 
         return order;
+
+    };
+
+    public static userDataMapper(data: users): User {
+
+        const user = new User();
+
+        user.id = data.id;
+        user.registration = data.registration;
+        user.name = data.name;
+        user.email = data.email;
+        user.hashPassword = data.hashPassword;
+        user.passwordCreated = data.passwordCreated;
+
+        switch (data.role) {
+            case "OPERATOR": user.role = UserRole.OPERATOR; break;
+            case "MANAGER": user.role = UserRole.MANAGER; break;
+            case "ADMIN": user.role = UserRole.ADMIN; break;
+        }
+
+        return user;
 
     };
 

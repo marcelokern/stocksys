@@ -5,6 +5,23 @@ type ErrorData = {
 
 export type IErrorList = {
 	DEFAULT: ErrorData;
+	UNAUTHORIZED: ErrorData;
+	FORBIDDEN: ErrorData;
+	INVALID_TOKEN: ErrorData;
+	INVALID_PASSWORD: ErrorData;
+	AUTHENTICATION_ERROR: ErrorData;
+	USER_MUST_CREATE_PASSWORD: ErrorData;
+	USER_LIST_ERROR: ErrorData;
+	USER_GET_ERROR: ErrorData;
+	USER_NOT_FOUND: ErrorData;
+	USER_NOT_CREATED: ErrorData;
+	USER_CREATE_PERMISSION_ERROR: ErrorData;
+	USER_NOT_UNIQUE: ErrorData;
+	USER_NOT_UPDATED: ErrorData;
+	USER_UPDATE_PERMISSION_ERROR: ErrorData;
+	USER_PASSWORD_NOT_UPDATED: ErrorData;
+	USER_NOT_DELETED: ErrorData;
+	USER_DELETE_PERMISSION_ERROR: ErrorData;
 	SUPPLIER_LIST_ERROR: ErrorData;
 	SUPPLIER_GET_ERROR: ErrorData;
 	SUPPLIER_NOT_FOUND: ErrorData;
@@ -38,6 +55,74 @@ export const ErrorList: IErrorList = {
 	DEFAULT: {
 		errorMessage: 'Ops, algo deu errado :( Por favor, tente novamente mais tarde.',
 		errorHTTPStatusCode: 500,
+	},
+	UNAUTHORIZED: {
+		errorMessage: 'Ops, você precisa de autenticação para acessar este recurso. Por favor, efetue o login e tente novamente.',
+		errorHTTPStatusCode: 401,
+	},
+	FORBIDDEN: {
+		errorMessage: 'Ops, você não tem permissão para acessar este recurso.',
+		errorHTTPStatusCode: 403,
+	},
+	INVALID_TOKEN: {
+		errorMessage: 'Ops, o token de autenticação é inválido. Por favor, efetue o login e tente novamente.',
+		errorHTTPStatusCode: 403,
+	},
+	INVALID_PASSWORD: {
+		errorMessage: 'A senha informada é inválida. :( Por favor, tente novamente.',
+		errorHTTPStatusCode: 400,
+	},
+	AUTHENTICATION_ERROR: {
+		errorMessage: 'Ops, ocorreu um erro na autenticação. :( Por favor, tente novamente mais tarde.',
+		errorHTTPStatusCode: 400,
+	},
+	USER_MUST_CREATE_PASSWORD: {
+		errorMessage: 'Ops, para prosseguir você precisa antes criar uma senha.',
+		errorHTTPStatusCode: 401,
+	},
+	USER_LIST_ERROR: {
+		errorMessage: 'Ops, não foi possível listar os usuários. :( Por favor, tente novamente mais tarde.',
+		errorHTTPStatusCode: 400,
+	},
+	USER_GET_ERROR: {
+		errorMessage: 'Ops, não foi possível obter os dados deste usuário. :( Por favor, tente novamente mais tarde.',
+		errorHTTPStatusCode: 400,
+	},
+	USER_NOT_FOUND: {
+		errorMessage: 'Ops, não foi possível encontrar este usuário.',
+		errorHTTPStatusCode: 404,
+	},
+	USER_NOT_CREATED: {
+		errorMessage: 'Ops, não foi possível cadastrar esse usuário. :( Por favor, tente novamente mais tarde.',
+		errorHTTPStatusCode: 400,
+	},
+	USER_CREATE_PERMISSION_ERROR: {
+		errorMessage: 'Ops, você não tem permissão para cadastrar este tipo de usuário.',
+		errorHTTPStatusCode: 403,
+	},
+	USER_NOT_UNIQUE: {
+		errorMessage: 'Ops, já existe um usuário cadastrado com esse número de matrícula ou e-mail. Por favor, verifique as informações e tente novamente. ',
+		errorHTTPStatusCode: 400,
+	},
+	USER_NOT_UPDATED: {
+		errorMessage: 'Ops, não foi possível atualizar esse usuário. :( Por favor, tente novamente mais tarde.',
+		errorHTTPStatusCode: 400,
+	},
+	USER_UPDATE_PERMISSION_ERROR: {
+		errorMessage: 'Ops, você não tem permissão para gerenciar este tipo de usuário.',
+		errorHTTPStatusCode: 403,
+	},
+	USER_PASSWORD_NOT_UPDATED: {
+		errorMessage: 'Ops, não foi possível atualizar a senha. :( Por favor, tente novamente mais tarde.',
+		errorHTTPStatusCode: 400,
+	},
+	USER_NOT_DELETED: {
+		errorMessage: 'Ops, não foi possível remover esse usuário. :( Por favor, tente novamente mais tarde.',
+		errorHTTPStatusCode: 400,
+	},
+	USER_DELETE_PERMISSION_ERROR: {
+		errorMessage: 'Ops, você não tem permissão para remover este tipo de usuário.',
+		errorHTTPStatusCode: 403,
 	},
 	SUPPLIER_LIST_ERROR: {
 		errorMessage: 'Ops, não foi possível listar os fornecedores. :( Por favor, tente novamente mais tarde.',

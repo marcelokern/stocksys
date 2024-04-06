@@ -22,29 +22,25 @@ export class MovementsRepository implements IMovementsRepository {
 
 	async list(parameters?: any): Promise<Movement[]> {
 
-		const { productsIds } = parameters;
-
 		let filter: any = {};
 
-		if (productsIds && productsIds.length > 0) filter.productId = { in: productsIds }
+		if (parameters?.productsIds && parameters?.productsIds.length > 0) filter.productId = { in: parameters?.productsIds }
 
 		const data = await this.prismaService.movements.findMany({
-			include: { product: { include: { supplier: true } } },
+			include: { user: true, product: { include: { supplier: true } } },
 			where: filter,
 			orderBy: { date: 'desc' },
 		})
 
-		return data.map(x => DataMapper.movementsDataMapper(x));
+		return data.map(x => DataMapper.movementDataMapper(x));
 
 	}
 
 	async summarize(type: MovementType, parameters?: any): Promise<any> {
 
-		const { productsIds } = parameters;
-
 		let filter: any = {};
 
-		if (productsIds && productsIds.length > 0) filter.productId = { in: productsIds }
+		if (parameters?.productsIds && parameters?.productsIds.length > 0) filter.productId = { in: parameters?.productsIds }
 
 		const data = await this.prismaService.movements.groupBy({
 			by: 'productId',
@@ -61,7 +57,7 @@ export class MovementsRepository implements IMovementsRepository {
 		try {
 
 			await this.prismaService.movements.create({
-				data: { ...movement, product: undefined }
+				data: { ...movement, product: undefined, user: undefined }
 			});
 
 		} catch (error: any) {
@@ -78,7 +74,7 @@ export class MovementsRepository implements IMovementsRepository {
 		try {
 
 			await this.prismaService.movements.createMany({
-				data: movements.map((movement) => ({ ...movement, product: undefined }))
+				data: movements.map((movement) => ({ ...movement, product: undefined, user: undefined }))
 			});
 
 		} catch (error: any) {
