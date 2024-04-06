@@ -1,12 +1,11 @@
 {
-	"name": "@sotcksys/core",
+	"name": "@stocksys/core",
 	"version": "1.0.0",
-	"main": "index.js",
+	"main": "src/main.ts",
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start:dev": "tsx watch src/main.ts",
-		"clean-db": "tsx src/infra/data/prisma/cleanDb.ts"
+		"start:dev": "tsx watch src/main.ts"
 	},
 	"dependencies": {
 		"@prisma/client": "^5.12.0",
