@@ -5,20 +5,20 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FirstAccessViewPropsType } from "../types/login.types";
 import { Toaster } from "@/components/ui/toaster";
 import { useGlobal } from "@/modules/global/contexts/global.context";
-import { SetPasswordFormSchema, setPasswordFormSchema } from "../schemas/set-password.schema";
+import { UpdatePasswordFormSchema, updatePasswordFormSchema } from "../schemas/update-password.schema";
 
 const FirstAccessView = ({ handlers }: FirstAccessViewPropsType) => {
 
     const { actionLoader } = useGlobal();
 
-    const { handleSetPassword } = handlers;
+    const { handleUpdatePassword } = handlers;
 
     const {
         register,
         handleSubmit,
         formState: { errors }
-    } = useForm<SetPasswordFormSchema>({
-        resolver: zodResolver(setPasswordFormSchema)
+    } = useForm<UpdatePasswordFormSchema>({
+        resolver: zodResolver(updatePasswordFormSchema)
     });
 
     return (
@@ -31,7 +31,7 @@ const FirstAccessView = ({ handlers }: FirstAccessViewPropsType) => {
                 <span>Para acessar o app pela primeira vez, é necessário criar uma senha.</span>
                 <span>Por favor, escolha uma senha forte, 8 dígitos contendo letras e números.</span>
             </div>
-            <form onSubmit={handleSubmit(handleSetPassword)} className="max-w-[350px] w-full flex flex-col items-center gap-5">
+            <form onSubmit={handleSubmit(handleUpdatePassword)} className="max-w-[350px] w-full flex flex-col items-center gap-5">
                 <Input type="password" placeholder="Senha atual" error={errors.currentPassword?.message} {...register('currentPassword')} />
                 <Input type="password" placeholder="Nova senha" error={errors.newPassword?.message} {...register('newPassword')} />
                 <Input type="password" placeholder="Confirmar senha" error={errors.confirmPassword?.message} {...register('confirmPassword')} />

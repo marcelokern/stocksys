@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const setPasswordFormSchema = z.object({
+export const updatePasswordFormSchema = z.object({
     currentPassword: z.string().min(1, "Obrigatório"),
     newPassword: z.string().min(8, "A senha deve ter no mínimo 8 dígitos"),
     confirmPassword: z.string().min(8, "A senha deve ter no mínimo 8 dígitos"),
@@ -9,4 +9,4 @@ export const setPasswordFormSchema = z.object({
     path: ["confirmPassword"]
 });
 
-export type SetPasswordFormSchema = z.infer<typeof setPasswordFormSchema>
+export type UpdatePasswordFormSchema = z.infer<typeof updatePasswordFormSchema>

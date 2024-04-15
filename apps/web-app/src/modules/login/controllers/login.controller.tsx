@@ -2,40 +2,24 @@ import { useGlobal } from "@/modules/global/contexts/global.context";
 import { useNavigate } from "react-router-dom";
 import { LoginFormSchemaType } from "../schemas/login-form.schema";
 import LoginView from "../views/login.view";
-import FirstAccessView from "../views/first-access.view";
-import { useState } from "react";
+import { useLogin } from "../contexts/login.context";
 
 const LoginController = () => {
 
-    const [firstAccess, setFirstAccess] = useState<boolean>(false);
-
-    const {
-        triggerLoader
-    } = useGlobal();
-
     const navigate = useNavigate();
+    const { triggerLoader } = useGlobal();
+    const { login } = useLogin();
 
-    const handleAuthenticate = (data: LoginFormSchemaType) => {
+    const handleLogin = async (data: LoginFormSchemaType) => {
 
         triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            setFirstAccess(true);
-        }, 2000)
+        const actionResult = await login(data);
+        if (actionResult.login) actionResult.passwordCreated ? navigate('/produtos') : navigate('/primeiro-acesso');
+        triggerLoader('ACTION', false);
 
     }
 
-    const handleSetPassword = (data: LoginFormSchemaType) => {
-
-        triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            navigate('/produtos')
-        }, 2000)
-
-    }
-
-    return firstAccess ? <FirstAccessView state={{}} handlers={{ handleSetPassword }} /> : <LoginView state={{}} handlers={{ handleAuthenticate }} />
+    return <LoginView state={{}} handlers={{ handleLogin }} />;
 
 };
 

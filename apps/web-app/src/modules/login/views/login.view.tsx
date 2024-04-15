@@ -11,7 +11,7 @@ const LoginView = ({ handlers }: LoginViewPropsType) => {
 
     const { actionLoader } = useGlobal();
 
-    const { handleAuthenticate } = handlers;
+    const { handleLogin } = handlers;
 
     const {
         register,
@@ -27,7 +27,7 @@ const LoginView = ({ handlers }: LoginViewPropsType) => {
             <h1 className="text-4xl font-semibold">
                 stocksys<span className="text-primary">.</span>
             </h1>
-            <form onSubmit={handleSubmit(handleAuthenticate)} className="max-w-[350px] w-full flex flex-col items-center gap-5">
+            <form onSubmit={handleSubmit(handleLogin)} className="max-w-[350px] w-full flex flex-col items-center gap-5">
                 <Input type="text" placeholder="Login" error={errors.login?.message} {...register('login')} />
                 <Input type="password" placeholder="Senha" error={errors.password?.message} {...register('password')} />
                 <Button loading={actionLoader} className="w-full">Login</Button>

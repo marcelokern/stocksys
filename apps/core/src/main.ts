@@ -10,8 +10,10 @@ import ordersRouter from './api/router/orders.router';
 import reportsRouter from './api/router/reports.router';
 import errorHandler from './api/middlewares/errorHandler.middleware';
 import usersRouter from './api/router/users.router';
+import cors from 'cors';
 
 express()
+	.use(cors())
 	.use(express.json())
 	.use(checkAuthentication)
 	.use(authenticationRouter)
@@ -22,10 +24,4 @@ express()
 	.use(ordersRouter)
 	.use(reportsRouter)
 	.use(errorHandler)
-	.listen(3000, () => {
-
-
-
-		console.log('===> STOCKSYS API STARTED')
-
-	});
+	.listen(3000, () => { console.log('===> STOCKSYS API STARTED'); });

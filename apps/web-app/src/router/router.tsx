@@ -1,4 +1,5 @@
 import App from "@/App";
+import FirstAccessController from "@/modules/login/controllers/first-access.controller";
 import LoginController from "@/modules/login/controllers/login.controller";
 import MovementsController from "@/modules/movements/controllers/movements.controller";
 import OrdersController from "@/modules/orders/controllers/orders.controller";
@@ -9,10 +10,21 @@ import SuppliersController from "@/modules/suppliers/controllers/suppliers.contr
 import UsersController from "@/modules/users/controllers/users.controller";
 import { Navigate, createBrowserRouter } from "react-router-dom";
 
+export const ProtectedRoute = ({ children }) => {
+    if (!localStorage.getItem('@stocksys-token')) {
+        return <Navigate to="/login" />;
+    }
+    return children;
+};
+
 const router = createBrowserRouter([
     {
         path: "/login",
         element: <LoginController />,
+    },
+    {
+        path: "/primeiro-acesso",
+        element: <FirstAccessController />,
     },
     {
         path: "/",
@@ -24,31 +36,31 @@ const router = createBrowserRouter([
             },
             {
                 path: "/produtos",
-                element: <ProductsController />
+                element: <ProtectedRoute><ProductsController /></ProtectedRoute>
             },
             {
                 path: "/fornecedores",
-                element: <SuppliersController />
+                element: <ProtectedRoute><SuppliersController /></ProtectedRoute>
             },
             {
                 path: "/movimentacoes",
-                element: <MovementsController />
+                element: <ProtectedRoute><MovementsController /></ProtectedRoute>
             },
             {
                 path: "/pedidos",
-                element: <OrdersController />
+                element: <ProtectedRoute><OrdersController /></ProtectedRoute>
             },
             {
                 path: "/relatorios",
-                element: <ReportsController />
+                element: <ProtectedRoute><ReportsController /></ProtectedRoute>
             },
             {
                 path: "/relatorios/detalhes",
-                element: <ReportDetailsController />
+                element: <ProtectedRoute><ReportDetailsController /></ProtectedRoute>
             },
             {
                 path: "/usuarios",
-                element: <UsersController />
+                element: <ProtectedRoute><UsersController /></ProtectedRoute>
             }
         ]
     },

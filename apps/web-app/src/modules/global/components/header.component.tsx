@@ -3,11 +3,13 @@ import { Button } from "../../../components/ui/button";
 import { useTheme } from "@/modules/global/contexts/theme.context";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
+import { useLogin } from "@/modules/login/contexts/login.context";
 
 const Header = () => {
 
     const { theme, setTheme } = useTheme();
-    const navigate = useNavigate()
+    const { logout } = useLogin();
+    const navigate = useNavigate();
 
     return (
 
@@ -42,7 +44,9 @@ const Header = () => {
                     <DropdownMenuContent className="mr-4">
                         <DropdownMenuItem><User className="w-4 h-4 mr-2" />Minha conta</DropdownMenuItem>
                         <DropdownMenuItem><LockKeyhole className="w-4 h-4 mr-2" />Alterar senha</DropdownMenuItem>
-                        <DropdownMenuItem><LogOut className="w-4 h-4 mr-2" />Sair</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => logout(navigate)}>
+                            <LogOut className="w-4 h-4 mr-2" />Sair
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
 
