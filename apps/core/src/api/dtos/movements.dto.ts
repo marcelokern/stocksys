@@ -6,6 +6,7 @@ export class ListMovementDto {
 	public date: Date;
 	public productCode: string;
 	public productDescription: string;
+	public productMeasureUnit: string;
 	public quantity: number;
 	public type: MovementType;
 	public userId: string;

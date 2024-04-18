@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader, MoreHorizontal, Pencil, Trash } from "lucide-react";
-import { ProductListItemType } from "../types/products.types";
 import { TableComponentPropsType } from "@/modules/global/types/global.types";
+import { ListProductType } from "../types/products.types";
 
 const ProductsTable = ({
     data,
     contentLoader,
     handleEdit,
     handleRemove
-}: TableComponentPropsType<ProductListItemType>) => {
+}: TableComponentPropsType<ListProductType>) => {
 
     return (
 
@@ -36,7 +36,7 @@ const ProductsTable = ({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data.map((x: ProductListItemType, i: number) =>
+                        {data.map((x: ListProductType, i: number) =>
                             <TableRow key={i}>
                                 <TableCell>{x.code}</TableCell>
                                 <TableCell className='w-1/2'>{x.description}</TableCell>

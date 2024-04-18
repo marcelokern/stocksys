@@ -1,19 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import ConfirmDialog from "@/modules/global/components/confirm-dialog.component";
 import FilterContainer from '@/modules/global/components/filter-container.component';
 import MainTitle from '@/modules/global/components/main-title.component';
 import MainContainer from '@/modules/global/components/main.component';
-import { CircleFadingPlus, Filter, X } from "lucide-react";
-import OrdersTable from '../components/orders-table.component';
-import { OrdersViewPropsType } from '../types/orders.types';
-import ConfirmDialog from "@/modules/global/components/confirm-dialog.component";
 import { useGlobal } from "@/modules/global/contexts/global.context";
-import { useOrders } from "../contexts/orders.context";
-import OrdersForm from "../components/orders-form.component";
+import { useSuppliers } from "@/modules/suppliers/contexts/suppliers.context";
+import { ListSupplierType } from "@/modules/suppliers/types/suppliers.types";
+import { CircleFadingPlus, Filter, X } from "lucide-react";
 import { useState } from "react";
-import { DatePickerWithRange } from "@/components/ui/date-picker";
-import { DateRange } from "react-day-picker";
-import { Switch } from "@/components/ui/switch";
+import CreateOrderForm from "../components/create-order-form.component";
+import OrdersTable from '../components/orders-table.component';
+import ViewOrderSheet from "../components/view-order-sheet.component";
+import { useOrders } from "../contexts/orders.context";
+import { OrdersViewPropsType } from '../types/orders.types';
 
 const OrdersView = ({ handlers }: OrdersViewPropsType) => {
 
@@ -33,31 +34,43 @@ const OrdersView = ({ handlers }: OrdersViewPropsType) => {
     } = useOrders();
 
     const {
+        suppliersList
+    } = useSuppliers()
+
+    const {
         handleSelectOrder,
-        handleListOrders,
         handleSelectStatus,
+        handleOpenForm,
+        handleListOrders,
         handleCreateOrder,
         handleGetOrderData,
         handleUpdateOrderStatus,
     } = handlers;
 
-    const [filterDateRange, setFilterDateRange] = useState<DateRange | undefined>();
-    const [filterSupplierInput, setFilterSupplierInput] = useState('');
+    const [filterSupplierId, setFilterSupplierId] = useState('');
     const [filterOnlyPending, setFilterOnlyPending] = useState<boolean>(false);
 
     return (
 
         <MainContainer>
 
-            <OrdersForm
-                visible={bottomSheetVisible && (bottomSheetContent === 'FORM_CREATE' || bottomSheetContent === 'FORM_VIEW')}
+            <CreateOrderForm
+                visible={bottomSheetVisible && bottomSheetContent === 'FORM_CREATE'}
                 closeBottomSheet={closeBottomSheet}
-                title={bottomSheetContent === 'FORM_CREATE' ? 'Novo pedido' : 'Detalhes do pedido'}
-                formLoader={formLoader}
-                formData={orderData}
                 actionLoader={actionLoader}
                 formAction={handleCreateOrder}
-                content={bottomSheetContent}
+            />
+
+            <ViewOrderSheet
+                visible={bottomSheetVisible && (bottomSheetContent === 'FORM_VIEW')}
+                closeBottomSheet={closeBottomSheet}
+                formData={orderData}
+                formLoader={formLoader}
+                formAction={(id: string, status: string) => {
+                    openBottomSheet('UPDATE_STATUS');
+                    handleSelectOrder(id);
+                    handleSelectStatus(status as 'COMPLETE' | 'CANCEL')
+                }}
             />
 
             <ConfirmDialog
@@ -72,7 +85,7 @@ const OrdersView = ({ handlers }: OrdersViewPropsType) => {
             <MainTitle
                 title={['Pedidos']}
                 buttons={[
-                    <Button onClick={() => openBottomSheet('FORM_CREATE')} className="flex flex-row items-center gap-2">
+                    <Button onClick={() => handleOpenForm()} className="flex flex-row items-center gap-2">
                         <CircleFadingPlus />Novo Pedido
                     </Button>
                 ]}
@@ -80,22 +93,39 @@ const OrdersView = ({ handlers }: OrdersViewPropsType) => {
 
             <FilterContainer title={'Filtrar pedidos'}>
 
-
-                <Input placeholder="Fornecedor" value={filterSupplierInput} onChange={(e) => setFilterSupplierInput(e.target.value)} />
-
-                <DatePickerWithRange dateRange={filterDateRange} setDateRange={setFilterDateRange} />
+                <Select onValueChange={(value) => setFilterSupplierId(value)} value={filterSupplierId}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Fornecedor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {suppliersList.map((x: ListSupplierType) => <SelectItem value={x.id}>{x.corporateName}</SelectItem>)}
+                    </SelectContent>
+                </Select>
 
                 <div className="flex flex-row items-center">
                     <Switch id="pendingOnly" checked={filterOnlyPending} className="mr-2" onCheckedChange={setFilterOnlyPending} />
                     <label htmlFor="pendingOnly" className="whitespace-nowrap">Somente pendentes</label>
                 </div>
 
-                <Button variant={'outline'} className="text-foreground" disabled={!(filterSupplierInput || filterDateRange || filterOnlyPending)} onClick={() => { handleListOrders({ supplier: filterSupplierInput, dateRange: filterDateRange, onlyPending: filterOnlyPending }) }}>
+                <Button
+                    variant={'outline'}
+                    className="text-foreground"
+                    disabled={!(filterSupplierId || filterOnlyPending)}
+                    onClick={() => {
+                        handleListOrders({
+                            supplierId: filterSupplierId,
+                            onlyPending: filterOnlyPending
+                        })
+                    }}>
                     <Filter className="w-4 mr-2" />Filtrar
                 </Button>
 
-                {(filterSupplierInput || filterDateRange || filterOnlyPending) &&
-                    <Button variant={'link'} onClick={() => { setFilterSupplierInput(''); setFilterDateRange(undefined); setFilterOnlyPending(false); handleListOrders(); }}>
+                {(filterSupplierId || filterOnlyPending) &&
+                    <Button variant={'link'} onClick={() => {
+                        setFilterSupplierId('');
+                        setFilterOnlyPending(false);
+                        handleListOrders();
+                    }}>
                         <X className="w-4 mr-2" />Limpar Filtros
                     </Button>
                 }
@@ -105,8 +135,16 @@ const OrdersView = ({ handlers }: OrdersViewPropsType) => {
             <OrdersTable
                 data={ordersList}
                 contentLoader={contentLoader}
-                handleView={(id: string) => { openBottomSheet('FORM_VIEW'); handleSelectOrder(id); handleGetOrderData(); }}
-                handleUpdateStatus={(id: string, status: string) => { openBottomSheet('UPDATE_STATUS'); handleSelectOrder(id); handleSelectStatus(status) }}
+                handleView={(id: string) => {
+                    openBottomSheet('FORM_VIEW');
+                    handleSelectOrder(id);
+                    handleGetOrderData(id);
+                }}
+                handleUpdateStatus={(id: string, status: string) => {
+                    openBottomSheet('UPDATE_STATUS');
+                    handleSelectOrder(id);
+                    handleSelectStatus(status as 'COMPLETE' | 'CANCEL');
+                }}
             />
 
         </MainContainer>

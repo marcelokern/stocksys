@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+export const listOrdersRequestSchema = z.object({
+	query: z.object({
+		supplierId: z.string().uuid().optional(),
+	}).strict(),
+});
+
 export const createOrderItemRequestSchema = z
 	.object({
 		productId: z.string({ required_error: 'O campo id do produto é obrigatório!' }).uuid('O id do produto informado é inválido'),

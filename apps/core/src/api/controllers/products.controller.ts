@@ -4,6 +4,7 @@ import { IProductsService } from '../../domain/services/products.service';
 import { Product } from '../../domain/models/product.model';
 import { ProductDtoMapper } from '../mappers/productDto.mapper';
 import { CreateProductDto, GetProductDto, ListProductDto, UpdateProductDto } from '../dtos/products.dto';
+import { ProductsListParametersType } from '../../infra/cross/filterParamsTypes';
 
 export interface IProductsController {
 	getProduct(request: Request, response: Response, next: NextFunction): Promise<Response | void>;
@@ -42,7 +43,8 @@ export class ProductsController implements IProductsController {
 
 		try {
 
-			const products: Product[] = await this.productsService.listProducts();
+			const parameters: ProductsListParametersType = request.query as ProductsListParametersType;
+			const products: Product[] = await this.productsService.listProducts(parameters);
 			const listProductsDto: ListProductDto[] = products.map((product) => ProductDtoMapper.listProductDtoMapper(product));
 			return response.send(listProductsDto);
 

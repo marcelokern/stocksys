@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { container } from 'tsyringe';
 import { IOrdersController } from '../controllers/orders.controller';
-import { createOrderRequestSchema, getOrderRequestSchema, updateOrderStatusRequestSchema } from '../validationSchemas/orders.schema';
+import { createOrderRequestSchema, getOrderRequestSchema, listOrdersRequestSchema, updateOrderStatusRequestSchema } from '../validationSchemas/orders.schema';
 import requestValidator from '../middlewares/requestValidator.middleware';
 import checkPermissions from '../middlewares/checkPermissions.middleware';
 import { UserRole } from '../../domain/models/user.model';
@@ -13,6 +13,7 @@ const orderController = container.resolve<IOrdersController>('OrdersController')
 router.get(
     '/orders',
     checkPermissions([UserRole.ADMIN, UserRole.MANAGER]),
+    requestValidator(listOrdersRequestSchema),
     orderController.listOrders.bind(orderController)
 );
 

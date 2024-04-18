@@ -11,7 +11,7 @@ export interface IMovementsService {
 
 @injectable()
 export class MovementsService implements IMovementsService {
-	
+
 	private readonly movementsRepository: IMovementsRepository;
 	private readonly productsRepository: IProductsRepository;
 
@@ -24,33 +24,33 @@ export class MovementsService implements IMovementsService {
 	}
 
 	async listMovements(): Promise<Movement[]> {
-		
+
 		try {
-		
-			return await this.movementsRepository.list();
-		
+
+			return await this.movementsRepository.list({ limit: 5 });
+
 		} catch (error: any) {
-		
+
 			throw new ErrorMapper('MOVEMENT_LIST_ERROR');
-		
+
 		}
 
 	}
 
 	async createMovement(movement: Movement): Promise<void> {
-		
+
 		try {
-		
+
 			await this.movementsRepository.create(movement);
 			await this.productsRepository.updateBalance(movement.productId, movement.type, movement.quantity);
-		
+
 		} catch (error: any) {
-		
+
 			if (error instanceof ErrorMapper) throw error;
 			throw new ErrorMapper('MOVEMENT_NOT_CREATED');
-		
+
 		}
-	
+
 	}
 
 }

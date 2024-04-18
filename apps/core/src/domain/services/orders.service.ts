@@ -4,10 +4,11 @@ import { IMovementsRepository } from '../../infra/repositories/movements.reposit
 import { Order, OrderStatus } from '../models/order.model';
 import { Movement, MovementType } from '../models/movement.model';
 import { ErrorMapper } from '../../infra/cross/errorMapper';
+import { OrdersListParametersType } from '../../infra/cross/filterParamsTypes';
 
 export interface IOrdersService {
 	getOrder(id: string): Promise<Order>;
-	listOrders(): Promise<Order[]>;
+	listOrders(parameters?: OrdersListParametersType): Promise<Order[]>;
 	createOrder(order: Order): Promise<void>;
 	updateOrderStatus(id: string, status: OrderStatus, userId: string): Promise<void>;
 }
@@ -41,11 +42,11 @@ export class OrdersService implements IOrdersService {
 
 	}
 
-	async listOrders(): Promise<Order[]> {
+	async listOrders(parameters?: OrdersListParametersType): Promise<Order[]> {
 
 		try {
 
-			return await this.ordersRepository.list();
+			return await this.ordersRepository.list(parameters);
 
 		} catch (error: any) {
 

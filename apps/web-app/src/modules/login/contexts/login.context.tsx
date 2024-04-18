@@ -1,13 +1,14 @@
 import { ContextProviderProps } from "@/modules/global/types/global.types";
 import { createContext, useContext, useState } from "react";
-import { LoginProviderState } from "../types/login.types";
+import { LoginProviderType } from "../types/login.types";
 import loginService from "../services/login.service";
 import { errorHandler } from "@/lib/error-handler";
 import { LoginFormSchemaType } from "../schemas/login-form.schema";
 import { UpdatePasswordFormSchema } from "../schemas/update-password.schema";
 import { NavigateFunction } from "react-router-dom";
+import { toast } from "@/components/ui/use-toast";
 
-const LoginProviderContext = createContext<LoginProviderState>({} as LoginProviderState)
+const LoginProviderContext = createContext<LoginProviderType>({} as LoginProviderType)
 
 export function LoginProvider({ children }: ContextProviderProps) {
 
@@ -20,8 +21,8 @@ export function LoginProvider({ children }: ContextProviderProps) {
             const response = await loginService.login(data);
             setUserEmail(data.login);
             localStorage.setItem('@stocksys-token', response.token);
-            const decode = JSON.parse(atob(response.token.split('.')[1]));
-            return { login: true, passwordCreated: decode.passwordCreated };
+            const { passwordCreated, role } = getUserInfo();
+            return { login: true, passwordCreated, navigate: role === 'OPERATOR' ? '/movimentacoes' : '/produtos' };
 
         } catch (error: any) {
 
@@ -32,12 +33,34 @@ export function LoginProvider({ children }: ContextProviderProps) {
 
     }
 
-    const updatePassword = async (data: UpdatePasswordFormSchema) => {
+    const updatePasswordFirstAccess = async (data: UpdatePasswordFormSchema) => {
 
         try {
 
             await loginService.updatePassword({ currentPassword: data.currentPassword, newPassword: data.newPassword });
             await login({ login: userEmail, password: data.newPassword });
+            const { role } = getUserInfo();
+            if (!role) return false;
+            return { login: true, navigate: role === 'OPERATOR' ? '/movimentacoes' : '/produtos' };
+
+        } catch (error: any) {
+
+            errorHandler(error);
+            return false;
+
+        }
+
+    }
+
+    const updatePassword = async (data: UpdatePasswordFormSchema) => {
+
+        try {
+
+            const response = await loginService.updatePassword({ currentPassword: data.currentPassword, newPassword: data.newPassword });
+            toast({
+                description: response.message,
+                variant: 'success'
+            })
             return true;
 
         } catch (error: any) {
@@ -49,6 +72,13 @@ export function LoginProvider({ children }: ContextProviderProps) {
 
     }
 
+    const getUserInfo = () => {
+
+        const token = localStorage.getItem('@stocksys-token');
+        return JSON.parse(atob(token.split('.')[1]));
+
+    }
+
     const logout = (navigate: NavigateFunction) => {
 
         localStorage.removeItem("@stocksys-token");
@@ -56,7 +86,13 @@ export function LoginProvider({ children }: ContextProviderProps) {
 
     }
 
-    const value = { login, updatePassword, logout }
+    const value = {
+        login,
+        updatePasswordFirstAccess,
+        updatePassword,
+        getUserInfo,
+        logout
+    }
 
     return (
         <LoginProviderContext.Provider value={value}>

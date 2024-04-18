@@ -1,22 +1,30 @@
-
-import { useToast } from "@/components/ui/use-toast";
 import { useGlobal } from "@/modules/global/contexts/global.context";
 import { useEffect, useState } from "react";
-import { OrderFormSchemaType } from "../schemas/orders-form.schema";
 import OrdersView from "../views/orders.view";
-import { DateRange } from "react-day-picker";
+import { useOrders } from "../contexts/orders.context";
+import { CreateOrderFormSchemaType, OrdersListParametersType } from "../types/orders.types";
+import { useSuppliers } from "@/modules/suppliers/contexts/suppliers.context";
+import { useProducts } from "@/modules/products/contexts/products.context";
 
 const OrdersController = () => {
 
-    const { toast } = useToast();
-
     const {
         triggerLoader,
+        openBottomSheet,
         closeBottomSheet
     } = useGlobal();
 
+    const {
+        listOrders,
+        getOrder,
+        createOrder,
+        updateOrderStatus
+    } = useOrders();
+
+    const { listSuppliers } = useSuppliers();
+
     const [selectedOrder, setSelectedOrder] = useState<string>('');
-    const [selectedStatus, setSelectedStatus] = useState<string>('');
+    const [selectedStatus, setSelectedStatus] = useState<'COMPLETE' | 'CANCEL'>();
 
     const handleSelectOrder = (id: string) => {
 
@@ -24,55 +32,57 @@ const OrdersController = () => {
 
     }
 
-    const handleSelectStatus = (status: string) => {
+    const handleSelectStatus = (status: 'COMPLETE' | 'CANCEL') => {
 
         setSelectedStatus(status);
 
     }
 
-    const handleListOrders = (filter?: { supplier: string, dateRange: DateRange | undefined, onlyPending: boolean }) => {
+    const handleOpenForm = () => {
+
+        listSuppliers();
+        openBottomSheet('FORM_CREATE');
+
+    }
+
+    const handleListOrders = async (parameters?: OrdersListParametersType) => {
 
         triggerLoader('CONTENT', true);
-        setTimeout(() => {
-            triggerLoader('CONTENT', false);
-        }, 3000);
+        await listOrders(parameters);
+        triggerLoader('CONTENT', false);
 
     }
 
-    const handleGetOrderData = () => {
+    const handleGetOrderData = async (id: string) => {
 
         triggerLoader('FORM', true);
-        setTimeout(() => {
-            triggerLoader('FORM', false);
-        }, 3000);
+        await getOrder(id);
+        triggerLoader('FORM', false);
 
     }
 
-    const handleCreateOrder = (orderData: OrderFormSchemaType) => {
+    const handleCreateOrder = async (orderData: CreateOrderFormSchemaType) => {
 
         triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            handleListOrders();
-            closeBottomSheet();
-            toast({ variant: 'success', description: `Produto cadastrado com sucesso!` });
-        }, 3000);
+        await createOrder(orderData);
+        triggerLoader('ACTION', false);
+        handleListOrders();
+        closeBottomSheet();
 
     };
 
-    const handleUpdateOrderStatus = () => {
+    const handleUpdateOrderStatus = async () => {
 
         triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            handleListOrders();
-            closeBottomSheet();
-            toast({ variant: 'success', description: `Produto ${selectedOrder} editado com sucesso!` });
-        }, 3000);
+        await updateOrderStatus(selectedOrder, { status: selectedStatus as 'COMPLETE' | 'CANCEL' });
+        triggerLoader('ACTION', false);
+        handleListOrders();
+        closeBottomSheet();
 
     };
 
     useEffect(() => {
+        listSuppliers();
         handleListOrders();
     }, []);
 
@@ -81,8 +91,9 @@ const OrdersController = () => {
             state={{}}
             handlers={{
                 handleSelectOrder,
-                handleListOrders,
                 handleSelectStatus,
+                handleOpenForm,
+                handleListOrders,
                 handleGetOrderData,
                 handleCreateOrder,
                 handleUpdateOrderStatus,

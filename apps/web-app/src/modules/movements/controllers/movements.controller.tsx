@@ -1,39 +1,44 @@
-import { useToast } from "@/components/ui/use-toast";
-import { CreateMovementData } from "../types/movements.types";
 import MovementsView from "../views/movements.view";
 import { useGlobal } from "@/modules/global/contexts/global.context";
 import { useEffect } from "react";
+import { useMovements } from "../contexts/movements.context";
+import { CreateMovementFormSchemaType } from "../types/movements.types";
+import { useProducts } from "@/modules/products/contexts/products.context";
 
 const MovementsController = () => {
-
-    const { toast } = useToast();
 
     const {
         triggerLoader,
     } = useGlobal();
 
-    const handleListMovements = () => {
+    const {
+        listMovements,
+        createMovement
+    } = useMovements()
+
+    const { listProducts } = useProducts();
+
+    const handleListMovements = async () => {
 
         triggerLoader('CONTENT', true);
-        setTimeout(() => {
-            triggerLoader('CONTENT', false);
-        }, 3000);
+        await listMovements();
+        triggerLoader('CONTENT', false);
 
     }
 
-    const handleCreateMovement = (data: CreateMovementData) => {
+    const handleCreateMovement = async (data: CreateMovementFormSchemaType) => {
 
         triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            handleListMovements();
-            toast({ variant: 'success', description: `Movimentação registrada com sucesso!` });
-        }, 3000);
+        const date = new Date();
+        await createMovement({ ...data, date: date.toISOString() });
+        triggerLoader('ACTION', false);
+        handleListMovements();
 
     }
 
     useEffect(() => {
         handleListMovements();
+        listProducts();
     }, []);
 
     return <MovementsView state={{}} handlers={{ handleCreateMovement }} />;

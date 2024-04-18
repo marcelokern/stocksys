@@ -24,4 +24,4 @@ express()
 	.use(ordersRouter)
 	.use(reportsRouter)
 	.use(errorHandler)
-	.listen(3000, () => { console.log('===> STOCKSYS API STARTED'); });
+	.listen(process.env.PORT, () => { console.log('===> STOCKSYS API STARTED'); });

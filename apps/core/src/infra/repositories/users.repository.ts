@@ -3,11 +3,12 @@ import { IPrismaService } from '../data/prisma/prisma.service';
 import { User } from '../../domain/models/user.model';
 import { DataMapper } from '../data/prisma/data.mapper';
 import { ErrorMapper } from '../cross/errorMapper';
+import { UsersListParametersType } from '../cross/filterParamsTypes';
 
 export interface IUsersRepository {
     getById(id: string): Promise<User>;
     getByEmail(email: string): Promise<User>;
-    list(): Promise<User[]>;
+    list(parameters?: UsersListParametersType): Promise<User[]>;
     create(user: User): Promise<void>;
     update(id: string, user: User): Promise<void>;
     updatePassword(id: string, password: string): Promise<void>;
@@ -56,9 +57,14 @@ export class UsersRepository implements IUsersRepository {
 
     }
 
-    async list(): Promise<User[]> {
+    async list(parameters?: any): Promise<User[]> {
 
-        const data = await this.prismaService.users.findMany();
+        let filter: any = {};
+        if (parameters?.name) filter.name = { contains: parameters?.name, mode: 'insensitive' };
+
+        const data = await this.prismaService.users.findMany({
+            where: filter
+        });
         return data.map(x => DataMapper.userDataMapper(x));
 
     }

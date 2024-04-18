@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { container } from 'tsyringe';
 import { IProductsController } from '../controllers/products.controller';
-import { createProductRequestSchema, deleteProductRequestSchema, getProductRequestSchema, updateProductRequestSchema } from '../validationSchemas/products.schema';
+import { createProductRequestSchema, deleteProductRequestSchema, getProductRequestSchema, listProductsRequestSchema, updateProductRequestSchema } from '../validationSchemas/products.schema';
 import requestValidator from '../middlewares/requestValidator.middleware';
 import checkPermissions from '../middlewares/checkPermissions.middleware';
 import { UserRole } from '../../domain/models/user.model';
@@ -13,6 +13,7 @@ const productController = container.resolve<IProductsController>('ProductsContro
 router.get(
     '/products',
     checkPermissions([UserRole.ADMIN, UserRole.MANAGER]),
+    requestValidator(listProductsRequestSchema),
     productController.listProducts.bind(productController)
 );
 

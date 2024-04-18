@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { container } from 'tsyringe';
 import { ISuppliersController } from '../controllers/suppliers.controller';
-import { createSupplierRequestSchema, deleteSupplierRequestSchema, getSupplierRequestSchema, updateSupplierRequestSchema } from '../validationSchemas/suppliers.schema';
+import { createSupplierRequestSchema, deleteSupplierRequestSchema, getSupplierRequestSchema, listSuppliersRequestSchema, updateSupplierRequestSchema } from '../validationSchemas/suppliers.schema';
 import requestValidator from '../middlewares/requestValidator.middleware';
 import checkPermissions from '../middlewares/checkPermissions.middleware';
 import { UserRole } from '../../domain/models/user.model';
@@ -13,6 +13,7 @@ const supplierController = container.resolve<ISuppliersController>('SuppliersCon
 router.get(
     '/suppliers',
     checkPermissions([UserRole.ADMIN, UserRole.MANAGER]),
+    requestValidator(listSuppliersRequestSchema),
     supplierController.listSuppliers.bind(supplierController)
 );
 

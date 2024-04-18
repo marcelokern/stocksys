@@ -40,6 +40,7 @@ export class ReportDtoMapper {
             reportDataDto.productId = item.product.id;
             reportDataDto.productCode = item.product.code;
             reportDataDto.productDescription = item.product.description;
+            reportDataDto.productMeasureUnit = item.product.measureUnit;
             reportDataDto.supplierCNPJ = item.product.supplier.cnpj;
             reportDataDto.supplierCorporateName = item.product.supplier.corporateName;
             reportDataDto.balance = item.product.balance;
@@ -71,11 +72,14 @@ export class ReportDtoMapper {
             reportDataDto.productId = item.product.id;
             reportDataDto.productCode = item.product.code;
             reportDataDto.productDescription = item.product.description;
+            reportDataDto.productMeasureUnit = item.product.measureUnit;
+            reportDataDto.productBalance = item.product.balance;
+            reportDataDto.productRepositionTime = item.product.repositionTime;
             reportDataDto.supplierCNPJ = item.product.supplier.cnpj;
             reportDataDto.supplierCorporateName = item.product.supplier.corporateName;
-            reportDataDto.averageConsumption = item.averageConsumption;
-            reportDataDto.daysToSafetyStock = item.daysToSafetyStock;
-            reportDataDto.daysToFinish = item.daysToFinish;
+            reportDataDto.averageConsumption = Math.round(item.averageConsumption);
+            reportDataDto.daysToSafetyStock = Math.round(item.daysToSafetyStock);
+            reportDataDto.daysToFinish = Math.round(item.daysToFinish);
             reportDataDto.safetyStockBeforeRepositionTime = item.safetyStockBeforeRepositionTime;
             reportDataDto.endsBeforeRepositionTime = item.endsBeforeRepositionTime;
 

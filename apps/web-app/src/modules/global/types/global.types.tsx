@@ -9,14 +9,20 @@ export type ViewPropsType<S, H> = {
     handlers: H,
 }
 
+export type DefaultResponseType = {
+    message: string
+}
+
+export type BottomSheetContentTypes = 'FORM_CREATE' | 'FORM_EDIT' | 'FORM_VIEW' | 'UPDATE_STATUS' | 'CONFIRM_DELETE' | 'CHANGE_PASSWORD';
+
 export type GlobalProviderState = {
     contentLoader: boolean,
     formLoader: boolean,
     actionLoader: boolean,
     bottomSheetVisible: boolean,
-    bottomSheetContent: 'FORM_CREATE' | 'FORM_EDIT' | 'FORM_VIEW' | 'UPDATE_STATUS' | 'CONFIRM_DELETE' | undefined,
+    bottomSheetContent: BottomSheetContentTypes | undefined,
     triggerLoader: (loaderType: 'CONTENT' | 'ACTION' | 'FORM', state: boolean) => void,
-    openBottomSheet: (content: 'FORM_CREATE' | 'FORM_EDIT' | 'FORM_VIEW' | 'UPDATE_STATUS' | 'CONFIRM_DELETE') => void,
+    openBottomSheet: (content: BottomSheetContentTypes) => void,
     closeBottomSheet: () => void
 }
 
@@ -52,8 +58,9 @@ export type FormComponentPropsType<T> = {
     formLoader: boolean,
     formData: T,
     actionLoader: boolean,
-    formAction: (data: T) => void,
-    content?: string
+    formAction: (data: T, status?: string) => void,
+    content?: string,
+    type?: BottomSheetContentTypes,
 }
 
 export type ConfirmDialogComponentPropsType = {
@@ -63,6 +70,11 @@ export type ConfirmDialogComponentPropsType = {
     description: string,
     actionLoader: boolean,
     confirmAction: () => void
+}
+
+export type ChangePasswordComponentPropsType = {
+    visible: boolean,
+    closeBottomSheet: () => void,
 }
 
 export type FilterContainerComponentPropsType = {

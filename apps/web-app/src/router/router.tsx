@@ -1,4 +1,5 @@
-import App from "@/App";
+import App from "@/modules/global/views/App";
+import ErrorScreen from "@/modules/global/views/Error";
 import FirstAccessController from "@/modules/login/controllers/first-access.controller";
 import LoginController from "@/modules/login/controllers/login.controller";
 import MovementsController from "@/modules/movements/controllers/movements.controller";
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: <App />,
+        errorElement: <ErrorScreen />,
         children: [
             {
                 path: "/",

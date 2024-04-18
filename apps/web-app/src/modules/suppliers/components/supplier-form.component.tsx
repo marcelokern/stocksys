@@ -2,10 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
-import { SupplierFormSchemaType, supplierFormSchema } from "../schemas/suppliers-form.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader } from "lucide-react";
+import { CircleAlert, Loader } from "lucide-react";
 import { FormComponentPropsType } from "@/modules/global/types/global.types";
+import { useEffect } from "react";
+import { CreateSupplierFormSchemaType } from "../types/suppliers.types";
+import { createSupplierFormSchema } from "../schemas/suppliers-form.schema";
 
 const SuppplierForm = ({
     visible,
@@ -15,13 +17,34 @@ const SuppplierForm = ({
     formData,
     actionLoader,
     formAction
-}: FormComponentPropsType<SupplierFormSchemaType>) => {
+}: FormComponentPropsType<CreateSupplierFormSchemaType>) => {
 
     const {
         register,
         handleSubmit,
+        setValue,
+        reset,
         formState: { errors }
-    } = useForm<SupplierFormSchemaType>({ resolver: zodResolver(supplierFormSchema) });
+    } = useForm<CreateSupplierFormSchemaType>({
+        resolver: zodResolver(createSupplierFormSchema)
+    });
+
+    useEffect(() => {
+        setValue('cnpj', formData.cnpj);
+        setValue('corporateName', formData.corporateName);
+        setValue('email', formData.email);
+        setValue('phone', formData.phone);
+        setValue('street', formData.street);
+        setValue('addressNumber', formData.addressNumber);
+        setValue('addressComplement', formData.addressComplement);
+        setValue('neighborhood', formData.neighborhood);
+        setValue('city', formData.city);
+        setValue('uf', formData.uf);
+    }, [formData])
+
+    useEffect(() => {
+        reset();
+    }, [visible])
 
     return (
 
@@ -39,24 +62,133 @@ const SuppplierForm = ({
 
                 ) : (
 
-                    <form onSubmit={handleSubmit((data) => formAction(data))} className='flex flex-col gap-3'>
+                    <form onSubmit={handleSubmit((data) => formAction(data))} className='flex flex-col gap-4'>
+
                         <div className='flex flex-row w-full gap-3'>
-                            <Input placeholder='CNPJ' className='w-[20%]' {...register('cnpj')} error={errors.cnpj?.message} />
-                            <Input placeholder='Razão Social' className='w-[40%]' {...register('corporateName')} error={errors.corporateName?.message} />
-                            <Input placeholder='E-mail' className='w-[20%]' {...register('email')} error={errors.email?.message} />
-                            <Input placeholder='Telefone' className='w-[20%]' {...register('phone')} error={errors.phone?.message} />
+
+                            <div className="flex flex-col w-[20%]">
+                                <label className="text-sm mb-2">CNPJ</label>
+                                <Input {...register('cnpj')} maxLength={14} onChange={(event) => {
+                                    event.target.value = event.target.value.replace(/[^\d]/g, '');
+                                }} />
+                                {errors.cnpj?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.cnpj?.message}
+                                    </span>
+                                }
+                            </div>
+
+                            <div className="flex flex-col w-[40%]">
+                                <label className="text-sm mb-2">Razão Social</label>
+                                <Input {...register('corporateName')} />
+                                {errors.corporateName?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.corporateName?.message}
+                                    </span>
+                                }
+                            </div>
+
+                            <div className="flex flex-col w-[20%]">
+                                <label className="text-sm mb-2">E-mail</label>
+                                <Input {...register('email')} />
+                                {errors.email?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.email?.message}
+                                    </span>
+                                }
+                            </div>
+
+                            <div className="flex flex-col w-[20%]">
+                                <label className="text-sm mb-2">Telefone</label>
+                                <Input {...register('phone')} />
+                                {errors.phone?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.phone?.message}
+                                    </span>
+                                }
+                            </div>
+
                         </div>
+
                         <div className='flex flex-row w-full gap-3'>
-                            <Input placeholder='Rua' className='w-[25%]' {...register('street')} error={errors.street?.message} />
-                            <Input placeholder='Número' className='w-[10%]' {...register('addressNumber')} error={errors.addressNumber?.message} />
-                            <Input placeholder='Complemento' className='w-[10%]'{...register('addressComplement')} error={errors.addressComplement?.message} />
-                            <Input placeholder='Bairro' className='w-[25%]' {...register('neighborhood')} error={errors.neighborhood?.message} />
-                            <Input placeholder='Cidade' className='w-[25%]' {...register('city')} error={errors.city?.message} />
-                            <Input placeholder='UF' className='w-[5%]' {...register('uf')} error={errors.uf?.message} />
+
+
+                            <div className="flex flex-col w-[25%]">
+                                <label className="text-sm mb-2">Rua</label>
+                                <Input {...register('street')} />
+                                {errors.street?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.street?.message}
+                                    </span>
+                                }
+                            </div>
+
+                            <div className="flex flex-col w-[10%]">
+                                <label className="text-sm mb-2">Número</label>
+                                <Input {...register('addressNumber')} />
+                                {errors.addressNumber?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.addressNumber?.message}
+                                    </span>
+                                }
+                            </div>
+
+                            <div className="flex flex-col w-[10%]">
+                                <label className="text-sm mb-2">Complemento</label>
+                                <Input {...register('addressComplement')} />
+                                {errors.addressComplement?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.addressComplement?.message}
+                                    </span>
+                                }
+                            </div>
+
+                            <div className="flex flex-col w-[25%]">
+                                <label className="text-sm mb-2">Bairro</label>
+                                <Input {...register('neighborhood')} />
+                                {errors.neighborhood?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.neighborhood?.message}
+                                    </span>
+                                }
+                            </div>
+
+                            <div className="flex flex-col w-[25%]">
+                                <label className="text-sm mb-2">Cidade</label>
+                                <Input {...register('city')} />
+                                {errors.city?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.city?.message}
+                                    </span>
+                                }
+                            </div>
+
+                            <div className="flex flex-col w-[5%]">
+                                <label className="text-sm mb-2">UF</label>
+                                <Input {...register('uf')} />
+                                {errors.uf?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.uf?.message}
+                                    </span>
+                                }
+                            </div>
+
                         </div>
+
                         <div className='flex flex-row gap-3 mt-6'>
                             <Button loading={actionLoader}>Salvar</Button>
                         </div>
+
                     </form>
 
                 )}

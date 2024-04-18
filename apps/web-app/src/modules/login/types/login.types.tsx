@@ -17,12 +17,12 @@ export type UpdatePasswordRequestType = {
     newPassword: string
 }
 
-export type UpdatePasswordResponseType = {}
-
-export type LoginProviderState = {
-    login: (data: LoginFormSchemaType) => Promise<{ login: boolean, passwordCreated?: boolean }>
+export type LoginProviderType = {
+    login: (data: LoginFormSchemaType) => Promise<{ login: boolean, passwordCreated: boolean, navigate: string }>
+    updatePasswordFirstAccess: (data: UpdatePasswordFormSchema) => Promise<{ login: boolean, navigate: string } | boolean>
     updatePassword: (data: UpdatePasswordFormSchema) => Promise<boolean>
-    logout: (navigate: NavigateFunction) => void
+    getUserInfo: () => { id: string, name: string, role: string, passwordCreated: boolean }
+    logout: (navigate: NavigateFunction) => boolean
 }
 
 type LoginViewStatePropsType = {}

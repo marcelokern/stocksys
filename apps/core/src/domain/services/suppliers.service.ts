@@ -2,10 +2,11 @@ import { inject, injectable } from 'tsyringe';
 import { ISuppliersRepository } from '../../infra/repositories/suppliers.repository';
 import { Supplier } from '../models/supplier.model';
 import { ErrorMapper } from '../../infra/cross/errorMapper';
+import { SupplierListParametersType } from '../../infra/cross/filterParamsTypes';
 
 export interface ISuppliersService {
 	getSupplier(id: string): Promise<Supplier>;
-	listSuppliers(): Promise<Supplier[]>;
+	listSuppliers(parameters?: SupplierListParametersType): Promise<Supplier[]>;
 	createSupplier(supplier: Supplier): Promise<void>;
 	updateSupplier(id: string, supplier: Supplier): Promise<void>;
 	deleteSupplier(id: string): Promise<void>;
@@ -35,11 +36,11 @@ export class SuppliersService implements ISuppliersService {
 
 	}
 
-	async listSuppliers(): Promise<Supplier[]> {
+	async listSuppliers(parameters?: SupplierListParametersType): Promise<Supplier[]> {
 
 		try {
 
-			return await this.suppliersRepository.list();
+			return await this.suppliersRepository.list(parameters);
 
 		} catch (error: any) {
 

@@ -4,7 +4,7 @@ import { IUsersController } from '../controllers/users.controller';
 import checkPermissions from '../middlewares/checkPermissions.middleware';
 import { UserRole } from '../../domain/models/user.model';
 import requestValidator from '../middlewares/requestValidator.middleware';
-import { createUserRequestSchema, deleteUserRequestSchema, getUserRequestSchema, updateUserRequestSchema } from '../validationSchemas/users.schema';
+import { createUserRequestSchema, deleteUserRequestSchema, getUserRequestSchema, listUsersRequestSchema, updateUserRequestSchema } from '../validationSchemas/users.schema';
 
 const router = Router();
 
@@ -13,6 +13,7 @@ const usersController = container.resolve<IUsersController>('UsersController');
 router.get(
     '/users',
     checkPermissions([UserRole.ADMIN, UserRole.MANAGER]),
+    requestValidator(listUsersRequestSchema),
     usersController.listUsers.bind(usersController)
 );
 

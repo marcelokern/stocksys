@@ -38,7 +38,7 @@ const UsersView = ({ handlers }: UsersViewPropsType) => {
         handleRemoveUser
     } = handlers;
 
-    const [filterUserInput, setFilterUserInput] = useState('');
+    const [filterName, setFilterName] = useState('');
 
     return (
 
@@ -52,13 +52,14 @@ const UsersView = ({ handlers }: UsersViewPropsType) => {
                 formData={userData}
                 actionLoader={actionLoader}
                 formAction={bottomSheetContent === 'FORM_CREATE' ? handleCreateUser : handleUpdateUser}
+                type={bottomSheetContent}
             />
 
             <ConfirmDialog
                 visible={bottomSheetVisible && bottomSheetContent === 'CONFIRM_DELETE'}
                 closeBottomSheet={closeBottomSheet}
                 title={'Remover usuário'}
-                description={'bla bla bla'}
+                description={'Deseja realmente remover este usuário?'}
                 actionLoader={actionLoader}
                 confirmAction={handleRemoveUser}
             />
@@ -74,14 +75,19 @@ const UsersView = ({ handlers }: UsersViewPropsType) => {
 
             <FilterContainer title={'Filtrar usuários'}>
 
-                <Input placeholder="Fornecedor" value={filterUserInput} onChange={(e) => setFilterUserInput(e.target.value)} />
+                <Input placeholder="Fornecedor" value={filterName} onChange={(e) => setFilterName(e.target.value)} />
 
-                <Button variant={'outline'} className="text-foreground" disabled={!filterUserInput} onClick={() => { handleListUsers({ user: filterUserInput }) }}>
+                <Button variant={'outline'}
+                    className="text-foreground"
+                    disabled={!filterName}
+                    onClick={() => {
+                        handleListUsers({ name: filterName })
+                    }}>
                     <Filter className="w-4 mr-2" />Filtrar
                 </Button>
 
-                {filterUserInput &&
-                    <Button variant={'link'} onClick={() => { setFilterUserInput(''); handleListUsers(); }}>
+                {filterName &&
+                    <Button variant={'link'} onClick={() => { setFilterName(''); handleListUsers(); }}>
                         <X className="w-4 mr-2" />Limpar Filtros
                     </Button>
                 }
@@ -91,7 +97,7 @@ const UsersView = ({ handlers }: UsersViewPropsType) => {
             <UsersTable
                 data={usersList}
                 contentLoader={contentLoader}
-                handleEdit={(id: string) => { openBottomSheet('FORM_EDIT'); handleSelectUser(id); handleGetUserData(); }}
+                handleEdit={(id: string) => { openBottomSheet('FORM_EDIT'); handleSelectUser(id); handleGetUserData(id); }}
                 handleRemove={(id: string) => { openBottomSheet('CONFIRM_DELETE'); handleSelectUser(id) }}
             />
 

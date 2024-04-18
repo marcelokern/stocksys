@@ -1,4 +1,4 @@
-import { ContextProviderProps, GlobalProviderState } from "@/modules/global/types/global.types"
+import { BottomSheetContentTypes, ContextProviderProps, GlobalProviderState } from "@/modules/global/types/global.types"
 import { createContext, useContext, useState } from "react"
 
 const GlobalProviderContext = createContext<GlobalProviderState>({} as GlobalProviderState)
@@ -9,7 +9,7 @@ export function GlobalProvider({ children }: ContextProviderProps) {
     const [actionLoader, setActionLoader] = useState<boolean>(false);
     const [formLoader, setFormLoader] = useState<boolean>(false);
     const [bottomSheetVisible, setBottomSheetVisible] = useState<boolean>(false)
-    const [bottomSheetContent, setBottomSheetContent] = useState<'FORM_CREATE' | 'FORM_EDIT' | 'FORM_VIEW' | 'UPDATE_STATUS' | 'CONFIRM_DELETE' | undefined>()
+    const [bottomSheetContent, setBottomSheetContent] = useState<BottomSheetContentTypes | undefined>()
 
     const triggerLoader = (loaderType: 'CONTENT' | 'ACTION' | 'FORM', state: boolean) => {
 
@@ -21,7 +21,7 @@ export function GlobalProvider({ children }: ContextProviderProps) {
 
     }
 
-    const openBottomSheet = (content: 'FORM_CREATE' | 'FORM_EDIT' | 'FORM_VIEW' | 'UPDATE_STATUS' | 'CONFIRM_DELETE') => {
+    const openBottomSheet = (content: BottomSheetContentTypes) => {
 
         setBottomSheetContent(content);
         setBottomSheetVisible(true);

@@ -38,7 +38,7 @@ const SuppliersView = ({ handlers }: SuppliersViewPropsType) => {
         handleRemoveSupplier
     } = handlers;
 
-    const [filterSupplierInput, setFilterSupplierInput] = useState('');
+    const [filterCorporateName, setFilterCorporateName] = useState('');
 
     return (
 
@@ -58,7 +58,7 @@ const SuppliersView = ({ handlers }: SuppliersViewPropsType) => {
                 visible={bottomSheetVisible && bottomSheetContent === 'CONFIRM_DELETE'}
                 closeBottomSheet={closeBottomSheet}
                 title={'Remover fornecedor'}
-                description={'bla bla bla'}
+                description={'Deseja realmente remover este fornecedor?'}
                 actionLoader={actionLoader}
                 confirmAction={handleRemoveSupplier}
             />
@@ -74,14 +74,24 @@ const SuppliersView = ({ handlers }: SuppliersViewPropsType) => {
 
             <FilterContainer title={'Filtrar fornecedores'}>
 
-                <Input placeholder="Fornecedor" value={filterSupplierInput} onChange={(e) => setFilterSupplierInput(e.target.value)} />
+                <Input placeholder="Fornecedor" value={filterCorporateName} onChange={(e) => setFilterCorporateName(e.target.value)} />
 
-                <Button variant={'outline'} className="text-foreground" disabled={!filterSupplierInput} onClick={() => { handleListSuppliers({ supplier: filterSupplierInput }) }}>
+                <Button
+                    variant={'outline'} className="text-foreground"
+                    disabled={!filterCorporateName}
+                    onClick={() => { handleListSuppliers({ corporateName: filterCorporateName }) }}
+                >
                     <Filter className="w-4 mr-2" />Filtrar
                 </Button>
 
-                {filterSupplierInput &&
-                    <Button variant={'link'} onClick={() => { setFilterSupplierInput(''); handleListSuppliers(); }}>
+                {filterCorporateName &&
+                    <Button
+                        variant={'link'}
+                        onClick={() => {
+                            setFilterCorporateName('');
+                            handleListSuppliers();
+                        }}
+                    >
                         <X className="w-4 mr-2" />Limpar Filtros
                     </Button>
                 }
@@ -91,8 +101,15 @@ const SuppliersView = ({ handlers }: SuppliersViewPropsType) => {
             <SuppliersTable
                 data={suppliersList}
                 contentLoader={contentLoader}
-                handleEdit={(id: string) => { openBottomSheet('FORM_EDIT'); handleSelectSupplier(id); handleGetSupplierData(); }}
-                handleRemove={(id: string) => { openBottomSheet('CONFIRM_DELETE'); handleSelectSupplier(id) }}
+                handleEdit={(id: string) => {
+                    openBottomSheet('FORM_EDIT');
+                    handleSelectSupplier(id);
+                    handleGetSupplierData(id);
+                }}
+                handleRemove={(id: string) => {
+                    openBottomSheet('CONFIRM_DELETE');
+                    handleSelectSupplier(id)
+                }}
             />
 
         </MainContainer>

@@ -23,13 +23,23 @@ export class MovementsRepository implements IMovementsRepository {
 	async list(parameters?: any): Promise<Movement[]> {
 
 		let filter: any = {};
+		let limit: any = {};
 
-		if (parameters?.productsIds && parameters?.productsIds.length > 0) filter.productId = { in: parameters?.productsIds }
+		if (parameters?.productsIds && parameters?.productsIds.length > 0) filter.productId = { in: parameters?.productsIds };
+		if (parameters?.limit && Number.isInteger(parameters?.limit)) { limit = { take: parameters?.limit } }
 
 		const data = await this.prismaService.movements.findMany({
-			include: { user: true, product: { include: { supplier: true } } },
+			include: {
+				user: true,
+				product: {
+					include: {
+						supplier: true
+					}
+				}
+			},
 			where: filter,
 			orderBy: { date: 'desc' },
+			...limit
 		})
 
 		return data.map(x => DataMapper.movementDataMapper(x));

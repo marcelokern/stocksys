@@ -1,18 +1,24 @@
 
-import { useToast } from "@/components/ui/use-toast";
 import { useGlobal } from "@/modules/global/contexts/global.context";
 import { useEffect, useState } from "react";
-import { SupplierFormSchemaType } from "../schemas/suppliers-form.schema";
 import SuppliersView from "../views/suppliers.view";
+import { useSuppliers } from "../contexts/suppliers.context";
+import { CreateSupplierFormSchemaType, SupplierListParametersType } from "../types/suppliers.types";
 
 const SuppliersController = () => {
-
-    const { toast } = useToast();
 
     const {
         triggerLoader,
         closeBottomSheet
     } = useGlobal();
+
+    const {
+        listSuppliers,
+        getSupplier,
+        createSupplier,
+        updateSupplier,
+        deleteSupplier
+    } = useSuppliers();
 
     const [selectedSupplier, setSelectedSupplier] = useState<string>('');
 
@@ -22,57 +28,49 @@ const SuppliersController = () => {
 
     }
 
-    const handleListSuppliers = (filters?: { supplier: string }) => {
+    const handleListSuppliers = async (parameters?: SupplierListParametersType) => {
 
         triggerLoader('CONTENT', true);
-        setTimeout(() => {
-            triggerLoader('CONTENT', false);
-        }, 3000);
+        await listSuppliers(parameters);
+        triggerLoader('CONTENT', false);
 
     }
 
-    const handleGetSupplierData = () => {
+    const handleGetSupplierData = async (id: string) => {
 
         triggerLoader('FORM', true);
-        setTimeout(() => {
-            triggerLoader('FORM', false);
-        }, 3000);
+        await getSupplier(id);
+        triggerLoader('FORM', false);
 
     }
 
-    const handleCreateSupplier = (supplierData: SupplierFormSchemaType) => {
+    const handleCreateSupplier = async (supplierData: CreateSupplierFormSchemaType) => {
 
         triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            handleListSuppliers();
-            closeBottomSheet();
-            toast({ variant: 'success', description: `Fornecedor cadastrado com sucesso!` });
-        }, 3000);
+        await createSupplier(supplierData);
+        triggerLoader('ACTION', false);
+        handleListSuppliers();
+        closeBottomSheet();
 
     };
 
-    const handleUpdateSupplier = (supplierData: SupplierFormSchemaType) => {
+    const handleUpdateSupplier = async (supplierData: CreateSupplierFormSchemaType) => {
 
         triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            handleListSuppliers();
-            closeBottomSheet();
-            toast({ variant: 'success', description: `Fornecedor ${selectedSupplier} editado com sucesso!` });
-        }, 3000);
+        await updateSupplier(selectedSupplier, supplierData);
+        triggerLoader('ACTION', false);
+        handleListSuppliers();
+        closeBottomSheet();
 
     };
 
-    const handleRemoveSupplier = () => {
+    const handleRemoveSupplier = async () => {
 
         triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            handleListSuppliers();
-            closeBottomSheet();
-            toast({ variant: 'success', description: `Fornecedor ${selectedSupplier} removido com sucesso!` });
-        }, 3000);
+        await deleteSupplier(selectedSupplier);
+        triggerLoader('ACTION', false);
+        handleListSuppliers();
+        closeBottomSheet();
 
     };
 

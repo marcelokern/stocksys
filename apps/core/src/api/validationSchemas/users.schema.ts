@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+export const listUsersRequestSchema = z.object({
+    query: z.object({
+        name: z.string().optional(),
+    }).strict(),
+});
+
 export const authenticateRequestSchema = z.object({
     body: z
         .object({

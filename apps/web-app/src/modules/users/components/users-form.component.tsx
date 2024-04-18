@@ -2,11 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Controller, useForm } from "react-hook-form";
-import { UserFormSchemaType, userFormSchema } from "../schemas/users-form.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader } from "lucide-react";
+import { CircleAlert, Loader } from "lucide-react";
 import { FormComponentPropsType } from "@/modules/global/types/global.types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useEffect } from "react";
+import { CreateUserFormSchemaType } from "../types/users.types";
+import { createUserFormSchema } from "../schemas/users-form.schema";
+import { useLogin } from "@/modules/login/contexts/login.context";
 
 const SuppplierForm = ({
     visible,
@@ -15,15 +18,32 @@ const SuppplierForm = ({
     formLoader,
     formData,
     actionLoader,
-    formAction
-}: FormComponentPropsType<UserFormSchemaType>) => {
+    formAction,
+    type
+}: FormComponentPropsType<CreateUserFormSchemaType>) => {
 
     const {
         register,
         handleSubmit,
+        setValue,
+        reset,
         control,
         formState: { errors }
-    } = useForm<UserFormSchemaType>({ resolver: zodResolver(userFormSchema) });
+    } = useForm<CreateUserFormSchemaType>({ resolver: zodResolver(createUserFormSchema) });
+
+    const { getUserInfo } = useLogin();
+
+    const { role } = getUserInfo();
+
+    useEffect(() => {
+        setValue('registration', formData.registration);
+        setValue('name', formData.name);
+        setValue('email', formData.email);
+    }, [formData])
+
+    useEffect(() => {
+        reset();
+    }, [visible])
 
     return (
 
@@ -41,31 +61,75 @@ const SuppplierForm = ({
 
                 ) : (
 
-                    <form onSubmit={handleSubmit((data) => formAction(data))} className='flex flex-col gap-3'>
+                    <form onSubmit={handleSubmit((data) => formAction(data))} className='flex flex-col gap-4'>
+
                         <div className='flex flex-row w-full gap-3'>
-                            <Input placeholder='Matrícula' className='w-[20%]' {...register('registration')} error={errors.registration?.message} />
-                            <Input placeholder='Nome' className='w-[40%]' {...register('name')} error={errors.name?.message} />
-                            <Input placeholder='E-mail' className='w-[20%]' {...register('email')} error={errors.email?.message} />
+
+                            <div className="flex flex-col w-[20%]">
+                                <label className="text-sm mb-2">Matrícula</label>
+                                <Input {...register('registration')} />
+                                {errors.registration?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.registration?.message}
+                                    </span>
+                                }
+                            </div>
+
+                            <div className="flex flex-col w-[40%]">
+                                <label className="text-sm mb-2">Nome</label>
+                                <Input {...register('name')} />
+                                {errors.name?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.name?.message}
+                                    </span>
+                                }
+                            </div>
+
+                            <div className="flex flex-col w-[20%]">
+                                <label className="text-sm mb-2">E-mail</label>
+                                <Input {...register('email')} />
+                                {errors.email?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.email?.message}
+                                    </span>
+                                }
+                            </div>
+
                             <Controller
                                 name={'role'}
                                 control={control}
+                                defaultValue={type === 'FORM_EDIT' ? formData.role : 'OPERATOR'}
                                 render={({ field }) => (
-                                    <Select onValueChange={field.onChange}>
-                                        <SelectTrigger className="w-[20%]">
-                                            <SelectValue placeholder="Função" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="OPERATOR">Operador de Estoque</SelectItem>
-                                            <SelectItem value="MANAGER">Gestor de Estoque</SelectItem>
-                                            <SelectItem value="ADMIN">Administrador</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <div className="flex flex-col w-[20%]">
+                                        <label className="text-sm mb-2">Função</label>
+                                        <Select onValueChange={field.onChange} defaultValue={type === 'FORM_EDIT' ? formData.role : 'OPERATOR'}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="OPERATOR">Operador de Estoque</SelectItem>
+                                                {role === 'ADMIN' && <SelectItem value="MANAGER">Gestor de Estoque</SelectItem>}
+                                                {role === 'ADMIN' && <SelectItem value="ADMIN">Administrador</SelectItem>}
+                                            </SelectContent>
+                                        </Select>
+                                        {errors.role?.message &&
+                                            <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                                <CircleAlert className="w-4 mr-1" />
+                                                {errors.role?.message}
+                                            </span>
+                                        }
+                                    </div>
                                 )}
                             />
                         </div>
+
                         <div className='flex flex-row gap-3 mt-6'>
                             <Button loading={actionLoader}>Salvar</Button>
                         </div>
+
                     </form>
 
                 )}

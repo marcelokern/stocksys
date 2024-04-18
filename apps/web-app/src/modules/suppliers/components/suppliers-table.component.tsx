@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader, MoreHorizontal, Pencil, Trash } from "lucide-react";
-import { SupplierListItemType } from "../types/suppliers.types";
 import { TableComponentPropsType } from "@/modules/global/types/global.types";
+import { ListSupplierType } from "../types/suppliers.types";
 
 const SuppliersTable = ({
     data,
     contentLoader,
     handleEdit,
     handleRemove
-}: TableComponentPropsType<SupplierListItemType>) => {
+}: TableComponentPropsType<ListSupplierType>) => {
 
     return (
 
@@ -34,7 +34,7 @@ const SuppliersTable = ({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data.map((x: SupplierListItemType, i: number) =>
+                        {data.map((x: ListSupplierType, i: number) =>
                             <TableRow key={i}>
                                 <TableCell>{x.cnpj}</TableCell>
                                 <TableCell className='w-1/2'>{x.corporateName}</TableCell>

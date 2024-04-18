@@ -12,6 +12,7 @@ export class MovementDtoMapper {
 		dto.date = movement.date;
 		dto.productCode = movement.product.code;
 		dto.productDescription = movement.product.description;
+		dto.productMeasureUnit = movement.product.measureUnit;
 		dto.quantity = movement.quantity;
 		dto.type = movement.type;
 		dto.userId = movement.userId;

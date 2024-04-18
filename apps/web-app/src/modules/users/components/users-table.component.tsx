@@ -2,16 +2,21 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader, MoreHorizontal, Pencil, Trash } from "lucide-react";
-import { UserListItemType } from "../types/users.types";
 import { TableComponentPropsType } from "@/modules/global/types/global.types";
 import { Badge } from "@/components/ui/badge";
+import { ListUserType } from "../types/users.types";
+import { useLogin } from "@/modules/login/contexts/login.context";
 
 const UsersTable = ({
     data,
     contentLoader,
     handleEdit,
     handleRemove
-}: TableComponentPropsType<UserListItemType>) => {
+}: TableComponentPropsType<ListUserType>) => {
+
+    const { getUserInfo } = useLogin();
+
+    const { role } = getUserInfo();
 
     return (
 
@@ -36,34 +41,34 @@ const UsersTable = ({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data.map((x: UserListItemType, i: number) =>
+                        {data.map((x: ListUserType, i: number) =>
                             <TableRow key={i}>
                                 <TableCell>{x.registration}</TableCell>
                                 <TableCell className='w-1/2'>{x.name}</TableCell>
                                 <TableCell>{x.email}</TableCell>
                                 <TableCell className="text-center">
-
                                     {x.role === 'ADMIN' && <Badge className="py-2 px-4">ADMIN</Badge>}
                                     {x.role === 'MANAGER' && <Badge variant={'secondary'} className="py-2 px-4">GESTOR</Badge>}
                                     {x.role === 'OPERATOR' && <Badge variant={'outline'} className="py-2 px-4">OPERADOR</Badge>}
-
                                 </TableCell>
                                 <TableCell>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger>
-                                            <Button variant={'ghost'}>
-                                                <MoreHorizontal className="w-4 h-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="mr-4">
-                                            <DropdownMenuItem onClick={() => handleEdit(x.id)}>
-                                                <Pencil className="w-4 h-4 mr-2" />Editar
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => handleRemove(x.id)}>
-                                                <Trash className="w-4 h-4 mr-2" />Remover
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    {(role === 'ADMIN' || (role === 'MANAGER' && x.role === 'OPERATOR')) &&
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger>
+                                                <Button variant={'ghost'}>
+                                                    <MoreHorizontal className="w-4 h-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent className="mr-4">
+                                                <DropdownMenuItem onClick={() => handleEdit(x.id)}>
+                                                    <Pencil className="w-4 h-4 mr-2" />Editar
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handleRemove(x.id)}>
+                                                    <Trash className="w-4 h-4 mr-2" />Remover
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    }
                                 </TableCell>
                             </TableRow>
                         )}

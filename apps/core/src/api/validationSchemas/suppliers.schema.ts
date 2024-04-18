@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+export const listSuppliersRequestSchema = z.object({
+	query: z.object({
+		corporateName: z.string().optional(),
+	}).strict(),
+});
+
 export const getSupplierRequestSchema = z.object({
 	params: z.object({
 		id: z.string().uuid('O id informado é inválido'),

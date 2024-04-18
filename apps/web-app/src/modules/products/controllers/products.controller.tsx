@@ -1,18 +1,29 @@
-
-import { useToast } from "@/components/ui/use-toast";
 import { useGlobal } from "@/modules/global/contexts/global.context";
 import { useEffect, useState } from "react";
-import { ProductFormSchemaType } from "../schemas/products-form.schema";
 import ProductsView from "../views/products.view";
+import { useProducts } from "../contexts/products.context";
+import { CreateProductFormSchemaType, ProductsListParametersType, UpdateProductFormSchemaType } from "../types/products.types";
+import { useSuppliers } from "@/modules/suppliers/contexts/suppliers.context";
 
 const ProductsController = () => {
 
-    const { toast } = useToast();
-
     const {
         triggerLoader,
-        closeBottomSheet
+        openBottomSheet,
+        closeBottomSheet,
     } = useGlobal();
+
+    const {
+        listProducts,
+        getProduct,
+        createProduct,
+        updateProduct,
+        deleteProduct
+    } = useProducts();
+
+    const {
+        listSuppliers
+    } = useSuppliers()
 
     const [selectedProduct, setSelectedProduct] = useState<string>('');
 
@@ -22,61 +33,61 @@ const ProductsController = () => {
 
     }
 
-    const handleListProducts = (filter?: { product: string, supplier: string }) => {
+    const handleOpenForm = (content: 'FORM_CREATE' | 'FORM_EDIT') => {
+
+        listSuppliers();
+        openBottomSheet(content);
+
+    }
+
+    const handleListProducts = async (parameters?: ProductsListParametersType) => {
 
         triggerLoader('CONTENT', true);
-        setTimeout(() => {
-            triggerLoader('CONTENT', false);
-        }, 3000);
+        await listProducts(parameters);
+        triggerLoader('CONTENT', false);
 
     }
 
-    const handleGetProductData = () => {
+    const handleGetProductData = async (id: string) => {
 
         triggerLoader('FORM', true);
-        setTimeout(() => {
-            triggerLoader('FORM', false);
-        }, 3000);
+        await getProduct(id);
+        triggerLoader('FORM', false);
 
     }
 
-    const handleCreateProduct = (productData: ProductFormSchemaType) => {
+    const handleCreateProduct = async (productData: CreateProductFormSchemaType) => {
 
         triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            handleListProducts();
-            closeBottomSheet();
-            toast({ variant: 'success', description: `Produto cadastrado com sucesso!` });
-        }, 3000);
+        await createProduct(productData)
+        triggerLoader('ACTION', false);
+        handleListProducts();
+        closeBottomSheet();
 
     };
 
-    const handleUpdateProduct = (productData: ProductFormSchemaType) => {
+    const handleUpdateProduct = async (productData: UpdateProductFormSchemaType) => {
 
         triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            handleListProducts();
-            closeBottomSheet();
-            toast({ variant: 'success', description: `Produto ${selectedProduct} editado com sucesso!` });
-        }, 3000);
+        await updateProduct(selectedProduct, productData);
+        triggerLoader('ACTION', false);
+        handleListProducts();
+        closeBottomSheet();
 
     };
 
-    const handleRemoveProduct = () => {
+    const handleRemoveProduct = async () => {
 
         triggerLoader('ACTION', true);
-        setTimeout(() => {
-            triggerLoader('ACTION', false);
-            handleListProducts();
-            closeBottomSheet();
-            toast({ variant: 'success', description: `Produto ${selectedProduct} removido com sucesso!` });
-        }, 3000);
+        await deleteProduct(selectedProduct);
+        triggerLoader('ACTION', false);
+        handleListProducts();
+        closeBottomSheet();
 
     };
 
     useEffect(() => {
+        listSuppliers();
         handleListProducts();
     }, []);
 
@@ -90,6 +101,7 @@ const ProductsController = () => {
                 handleCreateProduct,
                 handleUpdateProduct,
                 handleRemoveProduct,
+                handleOpenForm
             }}
         />
     );

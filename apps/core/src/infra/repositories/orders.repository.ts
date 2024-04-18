@@ -3,10 +3,12 @@ import { IPrismaService } from '../data/prisma/prisma.service';
 import { Order, OrderStatus } from '../../domain/models/order.model';
 import { DataMapper } from '../data/prisma/data.mapper';
 import { ErrorMapper } from '../cross/errorMapper';
+import { orderStatus } from '@prisma/client';
+import { OrdersListParametersType } from '../cross/filterParamsTypes';
 
 export interface IOrdersRepository {
 	get(id: string): Promise<Order>;
-	list(): Promise<Order[]>;
+	list(parameters?: OrdersListParametersType): Promise<Order[]>;
 	create(order: Order): Promise<void>;
 	updateStatus(id: string, status: string): Promise<void>;
 }
@@ -53,12 +55,17 @@ export class OrdersRepository implements IOrdersRepository {
 
 	}
 
-	async list(): Promise<Order[]> {
+	async list(parameters?: OrdersListParametersType): Promise<Order[]> {
+
+		let filter: any = {};
+		if (parameters?.onlyPending) filter.status = { equals: orderStatus.PENDING };
+		if (parameters?.supplierId) filter.supplierId = { equals: parameters?.supplierId };
 
 		const data = await this.prismaService.orders.findMany({
 			include: {
 				supplier: true
 			},
+			where: filter,
 			orderBy: {
 				date: 'desc'
 			}

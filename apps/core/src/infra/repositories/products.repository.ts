@@ -48,6 +48,8 @@ export class ProductsRepository implements IProductsRepository {
 
 		if (parameters?.productsIds && parameters?.productsIds.length > 0) filter.id = { in: parameters?.productsIds }
 		if (parameters?.onlyCriticalItems) filter.balance = { lte: this.prismaService.products.fields.safetyStock }
+		if (parameters?.description) filter.description = { contains: parameters?.description, mode: 'insensitive' };
+		if (parameters?.supplierId) filter.supplierId = { equals: parameters?.supplierId };
 
 		const data = await this.prismaService.products.findMany({
 			include: { supplier: true },

@@ -16,6 +16,7 @@ export class CurrentPositionReportDto extends ReportDtoBase {
     public productId: string;
     public productCode: string;
     public productDescription: string;
+    public productMeasureUnit: string;
     public supplierCNPJ: string;
     public supplierCorporateName: string;
     public balance: number;
@@ -28,6 +29,9 @@ export class ProjectionReportDto extends ReportDtoBase {
     public productId: string;
     public productCode: string;
     public productDescription: string;
+    public productMeasureUnit: string;
+    public productBalance: number;
+    public productRepositionTime: number;
     public supplierCNPJ: string;
     public supplierCorporateName: string;
     public averageConsumption: number;

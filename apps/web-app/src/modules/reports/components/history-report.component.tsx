@@ -26,7 +26,7 @@ const HistoryReport = ({ data: { movement } }: HistoryReportComponentPropsType) 
 
     <Card className={`flex flex-row items-center justify-between gap-6 p-6 ${cardConfig.borderColor}`}>
 
-      <span className="text-sm font-extralight">{movement.date}</span>
+      <span className="text-sm font-extralight">{new Date(movement.date).toLocaleDateString('pt-BR')}</span>
 
       {cardConfig.icon}
 
@@ -34,11 +34,15 @@ const HistoryReport = ({ data: { movement } }: HistoryReportComponentPropsType) 
         {movement.productDescription}
       </span>
 
-      <span className="font-bold">{movement.description}</span>
+      <div>
+        <span className="text-sm font-extralight">Descrição: </span>
+        <span className="font-bold">{movement.description}</span>
+      </div>
 
       <div>
         <span className="text-sm font-extralight">Quantidade </span>
-        <span className="font-bold">{movement.quantity}</span>
+        <span className="font-bold">{movement.quantity} </span>
+        <span className="text-sm font-extralight">{movement.productMeasureUnit} </span>
       </div>
 
       <div>

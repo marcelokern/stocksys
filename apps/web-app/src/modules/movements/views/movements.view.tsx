@@ -12,6 +12,8 @@ const MovementsView = ({ handlers }: MovementsViewPropsType) => {
 
     const { movementsList } = useMovements();
 
+    const { handleCreateMovement } = handlers;
+
     return (
 
         <MainContainer>
@@ -20,9 +22,15 @@ const MovementsView = ({ handlers }: MovementsViewPropsType) => {
 
             <div className='flex flex-row'>
 
-                <RegisterMovement handleCreateMovement={handlers.handleCreateMovement} actionLoader={actionLoader} />
+                <RegisterMovement
+                    handleCreateMovement={handleCreateMovement}
+                    actionLoader={actionLoader}
+                />
 
-                <LastMovements data={movementsList} loading={contentLoader} />
+                <LastMovements
+                    data={movementsList}
+                    loading={contentLoader}
+                />
 
             </div>
 

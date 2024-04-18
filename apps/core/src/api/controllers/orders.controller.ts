@@ -4,6 +4,7 @@ import { IOrdersService } from '../../domain/services/orders.service';
 import { Order } from '../../domain/models/order.model';
 import { CreateOrderDto, GetOrderDto, ListOrderDto } from '../dtos/orders.dto';
 import { OrderDtoMapper } from '../mappers/orderDto.mapper';
+import { OrdersListParametersType } from '../../infra/cross/filterParamsTypes';
 
 export interface IOrdersController {
 	getOrder(request: Request, response: Response, next: NextFunction): Promise<Response | void>;
@@ -42,7 +43,8 @@ export class OrdersController implements IOrdersController {
 
 		try {
 
-			const orders: Order[] = await this.ordersService.listOrders();
+			const parameters: OrdersListParametersType = request.query as OrdersListParametersType;
+			const orders: Order[] = await this.ordersService.listOrders(parameters);
 			const listOrdersDto: ListOrderDto[] = orders.map((order) => OrderDtoMapper.listOrderDtoMapper(order));
 			return response.send(listOrdersDto);
 

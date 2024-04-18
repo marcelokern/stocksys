@@ -53,28 +53,31 @@ const ProjectionReport = ({ data }: ProjectionReportComponentPropsType) => {
 
                 <div className="flex flex-row items-center">
                     <span className="text-sm font-extralight mr-2">Estoque atual </span>
-                    <span className={`font-bold text-xl ${(data.endsBeforeRepositionTime || data.safetyStockBeforeRepositionTime) && alertConfig()?.textColor}`}>###</span>
+                    <span className={`font-bold text-xl ${(data.endsBeforeRepositionTime || data.safetyStockBeforeRepositionTime) && alertConfig()?.textColor}`}>{data.productBalance}</span>
+                    <span className="text-sm font-extralight ml-2">{data.productMeasureUnit}</span>
                 </div>
 
 
                 <div className="flex flex-row items-center">
                     <span className="text-sm font-extralight mr-2">Consumo médio diário </span>
-                    <span className={`font-bold text-xl ${(data.endsBeforeRepositionTime || data.safetyStockBeforeRepositionTime) && alertConfig()?.textColor}`}>{data.averageConsumption}</span>
+                    <span className={`font-bold text-xl mr-2${(data.endsBeforeRepositionTime || data.safetyStockBeforeRepositionTime) && alertConfig()?.textColor}`}>{data.averageConsumption}</span>
+                    <span className="text-sm font-extralight ml-2">{data.productMeasureUnit}</span>
                 </div>
 
                 <div className="flex flex-row items-center flex-1">
                     <span className="text-sm font-extralight mr-2">Tempo de reposição </span>
-                    <span className="font-bold text-xl">###</span>
+                    <span className="font-bold text-xl">{data.productRepositionTime}</span>
+                    <span className="text-sm font-extralight ml-2">dias</span>
                 </div>
 
                 <div className="flex flex-row items-center">
                     <span className="text-sm font-extralight mr-2">Dias para atingir o estoque de segurança </span>
-                    <span className="font-bold text-xl">{data.daysToSafetyStock}</span>
+                    <span className="font-bold text-xl">{data.daysToSafetyStock || '--'}</span>
                 </div>
 
                 <div className="flex flex-row items-center">
                     <span className="text-sm font-extralight mr-2">Dias para terminar </span>
-                    <span className="font-bold text-xl">{data.daysToFinish}</span>
+                    <span className="font-bold text-xl">{data.daysToFinish || '--'}</span>
                 </div>
 
             </div>

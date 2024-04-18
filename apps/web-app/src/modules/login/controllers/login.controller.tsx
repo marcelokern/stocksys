@@ -14,7 +14,7 @@ const LoginController = () => {
 
         triggerLoader('ACTION', true);
         const actionResult = await login(data);
-        if (actionResult.login) actionResult.passwordCreated ? navigate('/produtos') : navigate('/primeiro-acesso');
+        if (actionResult.login) actionResult.passwordCreated ? navigate(actionResult.navigate) : navigate('/primeiro-acesso');
         triggerLoader('ACTION', false);
 
     }

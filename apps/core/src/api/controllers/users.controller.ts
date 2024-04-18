@@ -4,6 +4,7 @@ import { IUsersService } from '../../domain/services/users.service';
 import { User } from '../../domain/models/user.model';
 import { CreateUserDto, GetUserDto } from '../dtos/users.dto';
 import { UserDtoMapper } from '../mappers/usersDto.mapper';
+import { UsersListParametersType } from '../../infra/cross/filterParamsTypes';
 
 export interface IUsersController {
     authenticate(request: Request, response: Response, next: NextFunction): Promise<Response | void>;
@@ -61,7 +62,8 @@ export class UsersController implements IUsersController {
 
         try {
 
-            const users: User[] = await this.usersService.listUsers();
+            const parameters: UsersListParametersType = request.query as UsersListParametersType;
+            const users: User[] = await this.usersService.listUsers(parameters);
             const listUsersDto: GetUserDto[] = users.map(user => UserDtoMapper.getUserDtoMapper(user));
             return response.send(listUsersDto);
 
@@ -98,7 +100,7 @@ export class UsersController implements IUsersController {
             const user: User = UserDtoMapper.createUserDtoMapper(dto);
             const createUser = await this.usersService.createUser(user, currentUserRole);
             return response.send({
-                message: 'Usuário criado com sucesso! Uma senha temporária foi gerada e deverá ser alterada no primeiro acesso.',
+                message: 'Usuário criado com sucesso! A senha temporária deverá ser alterada no primeiro acesso.',
                 temporaryPassword: createUser.temporaryPassword
             });
 

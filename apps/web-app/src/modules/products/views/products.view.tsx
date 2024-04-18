@@ -4,7 +4,6 @@ import FilterContainer from '@/modules/global/components/filter-container.compon
 import MainTitle from '@/modules/global/components/main-title.component';
 import MainContainer from '@/modules/global/components/main.component';
 import { CircleFadingPlus, Filter, X } from "lucide-react";
-import SuppplierForm from '../components/products-form.component';
 import ProductsTable from '../components/products-table.component';
 import { ProductsViewPropsType } from '../types/products.types';
 import ConfirmDialog from "@/modules/global/components/confirm-dialog.component";
@@ -12,6 +11,10 @@ import { useGlobal } from "@/modules/global/contexts/global.context";
 import { useProducts } from "../contexts/products.context";
 import ProductsForm from "../components/products-form.component";
 import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useSuppliers } from "@/modules/suppliers/contexts/suppliers.context";
+import { ListSupplierType } from "@/modules/suppliers/types/suppliers.types";
+import ChangePassword from "@/modules/global/components/change-password.component";
 
 const ProductsView = ({ handlers }: ProductsViewPropsType) => {
 
@@ -31,16 +34,21 @@ const ProductsView = ({ handlers }: ProductsViewPropsType) => {
     } = useProducts();
 
     const {
+        suppliersList,
+    } = useSuppliers();
+
+    const {
         handleSelectProduct,
+        handleOpenForm,
         handleListProducts,
         handleGetProductData,
         handleCreateProduct,
         handleUpdateProduct,
-        handleRemoveProduct
+        handleRemoveProduct,
     } = handlers;
 
-    const [filterProductInput, setFilterProductInput] = useState('');
-    const [filterSupplierInput, setFilterSupplierInput] = useState('');
+    const [filterDescription, setFilterDescription] = useState('');
+    const [filterSupplierId, setFilterSupplierId] = useState('');
 
     return (
 
@@ -54,13 +62,14 @@ const ProductsView = ({ handlers }: ProductsViewPropsType) => {
                 formData={productData}
                 actionLoader={actionLoader}
                 formAction={bottomSheetContent === 'FORM_CREATE' ? handleCreateProduct : handleUpdateProduct}
+                type={bottomSheetContent}
             />
 
             <ConfirmDialog
                 visible={bottomSheetVisible && bottomSheetContent === 'CONFIRM_DELETE'}
                 closeBottomSheet={closeBottomSheet}
                 title={'Remover produto'}
-                description={'bla bla bla'}
+                description={'Deseja realmente remover este fornecedor?'}
                 actionLoader={actionLoader}
                 confirmAction={handleRemoveProduct}
             />
@@ -68,7 +77,8 @@ const ProductsView = ({ handlers }: ProductsViewPropsType) => {
             <MainTitle
                 title={['Produtos']}
                 buttons={[
-                    <Button onClick={() => openBottomSheet('FORM_CREATE')} className="flex flex-row items-center gap-2">
+                    <Button onClick={() => handleOpenForm('FORM_CREATE')}
+                        className="flex flex-row items-center gap-2">
                         <CircleFadingPlus />Cadastrar Produto
                     </Button>
                 ]}
@@ -76,15 +86,36 @@ const ProductsView = ({ handlers }: ProductsViewPropsType) => {
 
             <FilterContainer title={'Filtrar produtos'}>
 
-                <Input placeholder="Produto" value={filterProductInput} onChange={(e) => setFilterProductInput(e.target.value)} />
-                <Input placeholder="Fornecedor" value={filterSupplierInput} onChange={(e) => setFilterSupplierInput(e.target.value)} />
+                <Input placeholder="Produto" value={filterDescription} onChange={(e) => setFilterDescription(e.target.value)} />
 
-                <Button variant={'outline'} className="text-foreground" disabled={!(filterProductInput || filterSupplierInput)} onClick={() => { handleListProducts({ product: filterProductInput, supplier: filterSupplierInput }) }}>
+                <Select onValueChange={(value) => setFilterSupplierId(value)} value={filterSupplierId}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Fornecedor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {suppliersList.map((x: ListSupplierType) => <SelectItem value={x.id}>{x.corporateName}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+
+                <Button
+                    variant={'outline'}
+                    className="text-foreground"
+                    disabled={!(filterDescription || filterSupplierId)}
+                    onClick={() => {
+                        handleListProducts({ description: filterDescription, supplierId: filterSupplierId })
+                    }}
+                >
                     <Filter className="w-4 mr-2" />Filtrar
                 </Button>
 
-                {(filterProductInput || filterSupplierInput) &&
-                    <Button variant={'link'} onClick={() => { setFilterProductInput(''); setFilterSupplierInput(''); handleListProducts(); }}>
+                {(filterDescription || filterSupplierId) &&
+                    <Button
+                        variant={'link'}
+                        onClick={() => {
+                            setFilterDescription('');
+                            setFilterSupplierId('');
+                            handleListProducts();
+                        }}>
                         <X className="w-4 mr-2" />Limpar Filtros
                     </Button>
                 }
@@ -94,8 +125,15 @@ const ProductsView = ({ handlers }: ProductsViewPropsType) => {
             <ProductsTable
                 data={productsList}
                 contentLoader={contentLoader}
-                handleEdit={(id: string) => { openBottomSheet('FORM_EDIT'); handleSelectProduct(id); handleGetProductData(); }}
-                handleRemove={(id: string) => { openBottomSheet('CONFIRM_DELETE'); handleSelectProduct(id) }}
+                handleEdit={(id: string) => {
+                    handleOpenForm('FORM_EDIT');
+                    handleSelectProduct(id);
+                    handleGetProductData(id);
+                }}
+                handleRemove={(id: string) => {
+                    openBottomSheet('CONFIRM_DELETE');
+                    handleSelectProduct(id)
+                }}
             />
 
         </MainContainer>

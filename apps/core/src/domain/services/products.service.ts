@@ -4,10 +4,11 @@ import { IMovementsRepository } from '../../infra/repositories/movements.reposit
 import { Movement, MovementType } from '../models/movement.model';
 import { Product } from '../models/product.model';
 import { ErrorMapper } from '../../infra/cross/errorMapper';
+import { ProductsListParametersType } from '../../infra/cross/filterParamsTypes';
 
 export interface IProductsService {
 	getProduct(id: string): Promise<Product>;
-	listProducts(): Promise<Product[]>;
+	listProducts(parameters?: ProductsListParametersType): Promise<Product[]>;
 	createProduct(product: Product, userId: string): Promise<void>;
 	updateProduct(id: string, product: Product): Promise<void>;
 	deleteProduct(id: string): Promise<void>;
@@ -42,11 +43,11 @@ export class ProductsService implements IProductsService {
 
 	}
 
-	async listProducts(): Promise<Product[]> {
+	async listProducts(parameters?: ProductsListParametersType): Promise<Product[]> {
 
 		try {
 
-			return await this.productsRepository.list();
+			return await this.productsRepository.list(parameters);
 
 		} catch (error: any) {
 

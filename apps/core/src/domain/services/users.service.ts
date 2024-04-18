@@ -5,11 +5,12 @@ import { ErrorMapper } from '../../infra/cross/errorMapper';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
+import { UsersListParametersType } from '../../infra/cross/filterParamsTypes';
 
 export interface IUsersService {
     authenticate(login: string, password: string): Promise<string>;
     getUser(id: string): Promise<User>;
-    listUsers(): Promise<User[]>;
+    listUsers(parameters?: UsersListParametersType): Promise<User[]>;
     createUser(user: User, currentUserRole: UserRole): Promise<{ temporaryPassword: string }>;
     updateUser(id: string, user: User, currentUserRole: UserRole): Promise<void>;
     updateUserPassword(id: string, currentPassword: string, newPassword: string): Promise<void>;
@@ -34,7 +35,7 @@ export class UsersService implements IUsersService {
             if (await bcrypt.compare(password, user.hashPassword)) {
 
                 const secret: string = process.env.SECRET;
-                return jwt.sign({ id: user.id, role: user.role, passwordCreated: user.passwordCreated }, secret, { expiresIn: "8h" });
+                return jwt.sign({ id: user.id, name: user.name, role: user.role, passwordCreated: user.passwordCreated }, secret, { expiresIn: "8h" });
 
             }
 
@@ -90,11 +91,11 @@ export class UsersService implements IUsersService {
 
     }
 
-    async listUsers(): Promise<User[]> {
+    async listUsers(parameters?: UsersListParametersType): Promise<User[]> {
 
         try {
 
-            return await this.usersRepository.list();
+            return await this.usersRepository.list(parameters);
 
         } catch (error: any) {
 

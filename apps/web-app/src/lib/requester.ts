@@ -12,16 +12,11 @@ async function requester<RequestType, ResponseType>(method: HttpMethods, url: st
 
     const body = data ? JSON.stringify(data) : undefined;
 
-    console.log('REQUEST');
-    console.log('URL ==>', config.baseUrl + url);
-    data && console.log('BODY ==>', data);
-
     try {
 
         const response = await fetch(config.baseUrl + url, { method, headers, body });
         if (!response.ok) throw await response.json();
         const json = await response.json() as ResponseType;
-        console.log('RESPONSE ==>', json);
         return json;
 
     } catch (error: any) {
@@ -29,7 +24,6 @@ async function requester<RequestType, ResponseType>(method: HttpMethods, url: st
         if (error?.errorCode === 'UNAUTHORIZED' || error?.errorCode === 'FORBIDDEN' || error?.errorCode === 'INVALID_TOKEN') {
             localStorage.removeItem('@stocksys-token');
         }
-        console.error('ERROR ==>', error);
         throw error;
 
     }

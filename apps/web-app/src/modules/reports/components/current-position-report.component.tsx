@@ -46,12 +46,14 @@ const CurrentPositionReport = ({ data }: CurrentPositionComponentReportPropsType
 
             <div className="flex flex-row items-center">
                 <span className="text-sm font-extralight mr-2">Estoque atual </span>
-                <span className={`font-bold text-xl ${(data.isMissing || data.isUnderSafetyStock) && alertConfig()?.textColor}`}>{data.balance}</span>
+                <span className={`font-bold text-xl mr-2 ${(data.isMissing || data.isUnderSafetyStock) && alertConfig()?.textColor}`}>{data.balance}</span>
+                <span className="text-sm font-extralight mr-2">{data.productMeasureUnit}</span>
             </div>
 
             <div className="flex flex-row items-center">
                 <span className="text-sm font-extralight mr-2">Estoque de segurança </span>
-                <span className="font-bold text-xl">{data.safetyStock}</span>
+                <span className="font-bold text-xl mr-2">{data.safetyStock} </span>
+                <span className="text-sm font-extralight mr-2">{data.productMeasureUnit}</span>
             </div>
 
         </Card>

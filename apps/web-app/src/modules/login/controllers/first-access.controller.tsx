@@ -8,13 +8,13 @@ const FirstAccessController = () => {
 
     const navigate = useNavigate();
     const { triggerLoader } = useGlobal();
-    const { updatePassword } = useLogin();
+    const { updatePasswordFirstAccess } = useLogin();
 
     const handleUpdatePassword = async (data: UpdatePasswordFormSchema) => {
 
         triggerLoader('ACTION', true);
-        const actionResult = await updatePassword(data);
-        if (actionResult) navigate('/produtos');
+        const actionResult = await updatePasswordFirstAccess(data);
+        if (actionResult.login && actionResult.navigate) navigate(actionResult.navigate);
         triggerLoader('ACTION', false);
 
     }
