@@ -34,6 +34,7 @@ const SuppplierForm = ({
         setValue('corporateName', formData.corporateName);
         setValue('email', formData.email);
         setValue('phone', formData.phone);
+        setValue('zipcode', formData.zipcode);
         setValue('street', formData.street);
         setValue('addressNumber', formData.addressNumber);
         setValue('addressComplement', formData.addressComplement);
@@ -116,8 +117,18 @@ const SuppplierForm = ({
 
                         <div className='flex flex-row w-full gap-3'>
 
+                            <div className="flex flex-col w-[10%]">
+                                <label className="text-sm mb-2">Cep</label>
+                                <Input {...register('zipcode')} />
+                                {errors.street?.message &&
+                                    <span className="w-full text-xs text-red-700 flex flex-row items-center mt-2">
+                                        <CircleAlert className="w-4 mr-1" />
+                                        {errors.street?.message}
+                                    </span>
+                                }
+                            </div>
 
-                            <div className="flex flex-col w-[25%]">
+                            <div className="flex flex-col w-[20%]">
                                 <label className="text-sm mb-2">Rua</label>
                                 <Input {...register('street')} />
                                 {errors.street?.message &&
@@ -150,7 +161,7 @@ const SuppplierForm = ({
                                 }
                             </div>
 
-                            <div className="flex flex-col w-[25%]">
+                            <div className="flex flex-col w-[20%]">
                                 <label className="text-sm mb-2">Bairro</label>
                                 <Input {...register('neighborhood')} />
                                 {errors.neighborhood?.message &&

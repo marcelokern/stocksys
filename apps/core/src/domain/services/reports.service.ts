@@ -112,7 +112,7 @@ export class ReportsService implements IReportsService {
 
 				reportItem.product = item;
 				reportItem.averageConsumption = (consumptionByProduct[item.id] || 0) / report.totalDays;
-				reportItem.daysToSafetyStock = (item.balance - item.safetyStock) / reportItem.averageConsumption;
+				reportItem.daysToSafetyStock = item.balance - item.safetyStock <= 0 ? 0 : (item.balance - item.safetyStock) / reportItem.averageConsumption;
 				reportItem.daysToFinish = item.balance / reportItem.averageConsumption;
 				reportItem.safetyStockBeforeRepositionTime = reportItem.daysToSafetyStock < item.repositionTime;
 				reportItem.endsBeforeRepositionTime = reportItem.daysToFinish < item.repositionTime;

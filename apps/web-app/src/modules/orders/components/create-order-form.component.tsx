@@ -13,7 +13,7 @@ import { useSuppliers } from "@/modules/suppliers/contexts/suppliers.context";
 import { ListSupplierType } from "@/modules/suppliers/types/suppliers.types";
 import { useProducts } from "@/modules/products/contexts/products.context";
 import { ListProductType } from "@/modules/products/types/products.types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const CreateOrderForm = ({
     visible,
@@ -53,6 +53,10 @@ const CreateOrderForm = ({
         setAwaitingProducts(false);
 
     }
+
+    useEffect(() => {
+        reset();
+    }, [visible])
 
     return (
 

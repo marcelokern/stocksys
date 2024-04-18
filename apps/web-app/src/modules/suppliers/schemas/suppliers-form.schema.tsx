@@ -5,6 +5,7 @@ export const createSupplierFormSchema = z.object({
     corporateName: z.string().min(1, "Obrigatório"),
     email: z.string().email("E-mail inválido"),
     phone: z.string().optional(),
+    zipcode: z.string().optional(),
     street: z.string().optional(),
     addressNumber: z.string().optional(),
     addressComplement: z.string().optional(),

@@ -12,7 +12,7 @@ const productController = container.resolve<IProductsController>('ProductsContro
 
 router.get(
     '/products',
-    checkPermissions([UserRole.ADMIN, UserRole.MANAGER]),
+    checkPermissions([UserRole.OPERATOR, UserRole.ADMIN, UserRole.MANAGER]),
     requestValidator(listProductsRequestSchema),
     productController.listProducts.bind(productController)
 );

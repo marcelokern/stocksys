@@ -3,6 +3,8 @@ import ReportsView from "../views/reports.view";
 import { useGlobal } from "@/modules/global/contexts/global.context";
 import { useReports } from "../contexts/reports.context";
 import { DateRange } from "react-day-picker";
+import { useProducts } from "@/modules/products/contexts/products.context";
+import { useEffect } from "react";
 
 const ReportsController = () => {
 
@@ -15,6 +17,8 @@ const ReportsController = () => {
         generateCurrentPositionReport,
         generateProjectionReport
     } = useReports();
+
+    const { listProducts } = useProducts();
 
     const handleGenerateReport = async (setup: { products: string[], dateRange: DateRange, onlyCriticalItems: boolean }) => {
 
@@ -50,6 +54,8 @@ const ReportsController = () => {
         triggerLoader('ACTION', false);
 
     }
+
+    useEffect(() => { listProducts() }, [])
 
     return <ReportsView state={{}} handlers={{ handleGenerateReport }} />;
 
