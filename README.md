@@ -19,9 +19,9 @@ Na raíz do projeto, instale todas as dependências necessárias
 
 ```bash
 npm install
-
-or
-
+```
+ou
+```bash
 yarn
 ```
 
@@ -47,7 +47,9 @@ Então, inicie o projeto:
 
 ```bash
 npm run dev
-
+```
+ou
+```bash
 yarn dev
 ```
 
@@ -57,7 +59,9 @@ Para rodar a aplicação web, execute o comando abaixo dentro da pasta apps/web-
 
 ```bash
 npm run dev
-
+```
+ou
+```bash
 yarn dev
 ```
 
