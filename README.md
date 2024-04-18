@@ -55,7 +55,13 @@ yarn dev
 
 ### Web App
 
-Para rodar a aplicação web, execute o comando abaixo dentro da pasta apps/web-app
+Como pré-requisito, é necessário criar um arquivo .env na raíz dentro do projeto apps/web-app com a seguinte estrutura:
+
+```bash
+VITE_API_URL= #Url da api
+```
+
+Feito isso, para rodar a aplicação web, execute o comando abaixo
 
 ```bash
 npm run dev
